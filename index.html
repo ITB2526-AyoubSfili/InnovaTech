@@ -1,0 +1,609 @@
+<!DOCTYPE html>
+<html lang="ca">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Calculadora SAI/UPS — CPD InnovateTech</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0d0f14;
+    --surface: #141720;
+    --surface2: #1c2030;
+    --border: #2a2f42;
+    --accent: #00e5a0;
+    --accent2: #0090ff;
+    --warn: #f59e0b;
+    --danger: #ef4444;
+    --text: #e8eaf0;
+    --muted: #6b7280;
+    --mono: 'Space Mono', monospace;
+    --sans: 'DM Sans', sans-serif;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--sans);
+    min-height: 100vh;
+    padding: 0;
+  }
+
+  /* grid background */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(0,229,160,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,229,160,0.03) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .wrap { position: relative; z-index: 1; max-width: 1100px; margin: 0 auto; padding: 2rem 1.5rem 4rem; }
+
+  /* HEADER */
+  header {
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 1.5rem;
+    margin-bottom: 2rem;
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+  .header-left {}
+  .eyebrow {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    color: var(--accent);
+    text-transform: uppercase;
+    margin-bottom: 0.4rem;
+  }
+  h1 {
+    font-family: var(--mono);
+    font-size: clamp(1.4rem, 3vw, 2rem);
+    font-weight: 700;
+    color: var(--text);
+    line-height: 1.1;
+  }
+  h1 span { color: var(--accent); }
+  .header-meta {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--muted);
+    text-align: right;
+    line-height: 1.8;
+  }
+
+  /* MAIN GRID */
+  .main-grid {
+    display: grid;
+    grid-template-columns: 1fr 340px;
+    gap: 1.5rem;
+    align-items: start;
+  }
+
+  /* PANEL */
+  .panel {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 2px;
+    overflow: hidden;
+    margin-bottom: 1.25rem;
+  }
+  .panel-header {
+    background: var(--surface2);
+    border-bottom: 1px solid var(--border);
+    padding: 0.6rem 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .panel-header .dot {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: var(--accent);
+    box-shadow: 0 0 6px var(--accent);
+  }
+  .panel-title {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .panel-body { padding: 1.25rem 1rem; }
+
+  /* SLIDER ROWS */
+  .sl-row {
+    display: grid;
+    grid-template-columns: 180px 1fr 80px;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 0.9rem;
+  }
+  .sl-row:last-child { margin-bottom: 0; }
+  .sl-label {
+    font-size: 12px;
+    color: var(--muted);
+    font-family: var(--sans);
+    font-weight: 400;
+  }
+  .sl-label strong {
+    display: block;
+    color: var(--text);
+    font-weight: 500;
+    font-size: 12px;
+    margin-bottom: 1px;
+  }
+  input[type=range] {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 100%;
+    height: 3px;
+    background: var(--border);
+    border-radius: 2px;
+    outline: none;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  input[type=range]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 14px; height: 14px;
+    border-radius: 50%;
+    background: var(--accent);
+    box-shadow: 0 0 8px rgba(0,229,160,0.5);
+    cursor: pointer;
+    transition: transform 0.15s;
+  }
+  input[type=range]::-webkit-slider-thumb:hover { transform: scale(1.2); }
+  input[type=range]:focus { background: var(--border); }
+  .sl-val {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--accent);
+    text-align: right;
+    white-space: nowrap;
+  }
+
+  /* METRICS SIDEBAR */
+  .metrics { display: flex; flex-direction: column; gap: 1rem; }
+
+  .big-metric {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 2px;
+    padding: 1.25rem 1rem;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .big-metric::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: var(--accent);
+  }
+  .big-metric.warn-metric::before { background: var(--warn); }
+  .big-metric.bad-metric::before { background: var(--danger); }
+
+  .metric-label {
+    font-family: var(--mono);
+    font-size: 9px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 0.5rem;
+  }
+  .metric-value {
+    font-family: var(--mono);
+    font-size: 2.2rem;
+    font-weight: 700;
+    color: var(--accent);
+    line-height: 1;
+    transition: color 0.3s;
+  }
+  .metric-value.warn { color: var(--warn); }
+  .metric-value.bad { color: var(--danger); }
+  .metric-unit {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--muted);
+    margin-top: 0.3rem;
+  }
+
+  /* CHARGE BAR */
+  .charge-panel {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 2px;
+    padding: 1.25rem 1rem;
+  }
+  .charge-label {
+    font-family: var(--mono);
+    font-size: 9px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 0.8rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .charge-pct {
+    font-family: var(--mono);
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--text);
+  }
+  .bar-track {
+    background: var(--border);
+    height: 8px;
+    border-radius: 1px;
+    overflow: hidden;
+    margin-bottom: 0.5rem;
+  }
+  .bar-fill {
+    height: 100%;
+    border-radius: 1px;
+    transition: width 0.5s cubic-bezier(.4,0,.2,1), background 0.3s;
+    background: var(--accent);
+    box-shadow: 0 0 10px rgba(0,229,160,0.4);
+  }
+  .bar-fill.warn { background: var(--warn); box-shadow: 0 0 10px rgba(245,158,11,0.4); }
+  .bar-fill.bad  { background: var(--danger); box-shadow: 0 0 10px rgba(239,68,68,0.4); }
+  .bar-ticks {
+    display: flex;
+    justify-content: space-between;
+    font-family: var(--mono);
+    font-size: 9px;
+    color: var(--muted);
+  }
+  .status-pill {
+    display: inline-block;
+    font-family: var(--mono);
+    font-size: 9px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 3px 10px;
+    border-radius: 1px;
+    background: rgba(0,229,160,0.12);
+    color: var(--accent);
+    border: 1px solid rgba(0,229,160,0.25);
+    margin-top: 0.75rem;
+    transition: all 0.3s;
+  }
+  .status-pill.warn { background: rgba(245,158,11,0.12); color: var(--warn); border-color: rgba(245,158,11,0.25); }
+  .status-pill.bad  { background: rgba(239,68,68,0.12); color: var(--danger); border-color: rgba(239,68,68,0.25); }
+
+  /* TABLE */
+  .eq-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+  .eq-table th {
+    font-family: var(--mono);
+    font-size: 9px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+    padding: 0.4rem 0.5rem;
+    border-bottom: 1px solid var(--border);
+    text-align: left;
+    font-weight: 400;
+  }
+  .eq-table td {
+    padding: 0.5rem 0.5rem;
+    border-bottom: 1px solid rgba(42,47,66,0.5);
+    color: var(--text);
+    font-family: var(--sans);
+    vertical-align: middle;
+  }
+  .eq-table tr.total-row td {
+    border-top: 1px solid var(--border);
+    border-bottom: none;
+    font-weight: 600;
+    color: var(--accent);
+    font-family: var(--mono);
+    font-size: 11px;
+  }
+  .pct-bar {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .pct-mini {
+    background: var(--border);
+    height: 4px;
+    border-radius: 1px;
+    width: 60px;
+    overflow: hidden;
+  }
+  .pct-mini-fill {
+    height: 100%;
+    background: var(--accent2);
+    border-radius: 1px;
+  }
+  .pct-txt { font-family: var(--mono); font-size: 10px; color: var(--muted); }
+
+  /* FORMULA BOX */
+  .formula-box {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--accent2);
+    border-radius: 0 2px 2px 0;
+    padding: 1rem;
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--muted);
+    line-height: 2;
+    margin-bottom: 1.25rem;
+  }
+  .formula-box .fline { display: block; }
+  .formula-box .fvar { color: var(--accent); }
+  .formula-box .feq  { color: var(--text); }
+
+  /* FOOTER */
+  footer {
+    border-top: 1px solid var(--border);
+    padding-top: 1rem;
+    margin-top: 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  footer span {
+    font-family: var(--mono);
+    font-size: 9px;
+    letter-spacing: 0.1em;
+    color: var(--muted);
+    text-transform: uppercase;
+  }
+  footer .version { color: var(--accent); }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <div class="header-left">
+      <div class="eyebrow">// InnovateTech · Bloc 0371 · CPD</div>
+      <h1>Calculadora <span>SAI/UPS</span></h1>
+    </div>
+    <div class="header-meta">
+      Projecte Transversal ASIXc1<br>
+      Alumne: Ayoub<br>
+      Data: <span id="hdate"></span>
+    </div>
+  </header>
+
+  <div class="formula-box">
+    <span class="fline"><span class="fvar">Autonomia (min)</span> <span class="feq">=</span> [ VA_total × 0.7 × η_bateries ] ÷ W_total × 60</span>
+    <span class="fline"><span class="fvar">Càrrega SAI (%)</span> <span class="feq">=</span> W_total ÷ ( VA_total × PF ) × 100</span>
+    <span class="fline"><span class="fvar">Recomanació</span> <span class="feq">:</span> càrrega &lt; 60% · autonomia &gt; 20 min · redundància N+1</span>
+  </div>
+
+  <div class="main-grid">
+    <div class="left-col">
+
+      <div class="panel">
+        <div class="panel-header"><div class="dot"></div><span class="panel-title">Consums dels equips</span></div>
+        <div class="panel-body">
+          <div class="sl-row">
+            <div class="sl-label"><strong>Servidors Dell R540</strong>× 3 unitats</div>
+            <input type="range" min="100" max="600" step="10" value="350" id="r540" oninput="upd()">
+            <div class="sl-val" id="r540v">1050 W</div>
+          </div>
+          <div class="sl-row">
+            <div class="sl-label"><strong>Servidors Dell R440</strong>× 2 unitats</div>
+            <input type="range" min="80" max="400" step="10" value="250" id="r440" oninput="upd()">
+            <div class="sl-val" id="r440v">500 W</div>
+          </div>
+          <div class="sl-row">
+            <div class="sl-label"><strong>Switches de xarxa</strong>× 3 unitats</div>
+            <input type="range" min="20" max="150" step="5" value="60" id="sw" oninput="upd()">
+            <div class="sl-val" id="swv">180 W</div>
+          </div>
+          <div class="sl-row">
+            <div class="sl-label"><strong>Firewall pfSense</strong>× 1 unitat</div>
+            <input type="range" min="10" max="100" step="5" value="40" id="fw" oninput="upd()">
+            <div class="sl-val" id="fwv">40 W</div>
+          </div>
+          <div class="sl-row">
+            <div class="sl-label"><strong>CRAC climatització</strong>càrrega parcial</div>
+            <input type="range" min="50" max="500" step="10" value="200" id="crac" oninput="upd()">
+            <div class="sl-val" id="cracv">200 W</div>
+          </div>
+          <div class="sl-row">
+            <div class="sl-label"><strong>Altres</strong>KVM, PDU, llums</div>
+            <input type="range" min="0" max="200" step="5" value="50" id="misc" oninput="upd()">
+            <div class="sl-val" id="miscv">50 W</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-header"><div class="dot" style="background:var(--accent2);box-shadow:0 0 6px var(--accent2)"></div><span class="panel-title">Configuració del SAI</span></div>
+        <div class="panel-body">
+          <div class="sl-row">
+            <div class="sl-label"><strong>Capacitat per unitat</strong>VA nominats</div>
+            <input type="range" min="1000" max="10000" step="500" value="3000" id="va" oninput="upd()">
+            <div class="sl-val" id="vav">3000 VA</div>
+          </div>
+          <div class="sl-row">
+            <div class="sl-label"><strong>Factor de potència</strong>PF del SAI</div>
+            <input type="range" min="60" max="99" step="1" value="80" id="pf" oninput="upd()">
+            <div class="sl-val" id="pfv">0.80</div>
+          </div>
+          <div class="sl-row">
+            <div class="sl-label"><strong>Unitats en paral·lel</strong>redundància N+1</div>
+            <input type="range" min="1" max="4" step="1" value="2" id="nu" oninput="upd()">
+            <div class="sl-val" id="nuv">× 2</div>
+          </div>
+          <div class="sl-row">
+            <div class="sl-label"><strong>Eficiència bateries</strong>% rendiment real</div>
+            <input type="range" min="70" max="99" step="1" value="90" id="eff" oninput="upd()">
+            <div class="sl-val" id="effv">90 %</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-header"><div class="dot" style="background:var(--muted);box-shadow:none"></div><span class="panel-title">Desglossament de consum</span></div>
+        <div class="panel-body" style="padding:0">
+          <table class="eq-table">
+            <thead>
+              <tr>
+                <th>Equip</th>
+                <th>Unitats</th>
+                <th>W/unit</th>
+                <th>Total W</th>
+                <th>% total</th>
+              </tr>
+            </thead>
+            <tbody id="tbody"></tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="metrics">
+
+      <div class="big-metric" id="m-aut-card">
+        <div class="metric-label">Autonomia estimada</div>
+        <div class="metric-value" id="m-aut">31</div>
+        <div class="metric-unit">minuts sense corrent</div>
+      </div>
+
+      <div class="big-metric">
+        <div class="metric-label">Consum total CPD</div>
+        <div class="metric-value" style="font-size:1.7rem;color:var(--text)" id="m-total">2020 W</div>
+        <div class="metric-unit">watts actius</div>
+      </div>
+
+      <div class="big-metric">
+        <div class="metric-label">Potència SAI total</div>
+        <div class="metric-value" style="font-size:1.7rem;color:var(--accent2)" id="m-sai">4800 W</div>
+        <div class="metric-unit">watts disponibles</div>
+      </div>
+
+      <div class="charge-panel">
+        <div class="charge-label">
+          <span>Càrrega del SAI</span>
+          <span class="charge-pct" id="pct-txt">42%</span>
+        </div>
+        <div class="bar-track">
+          <div class="bar-fill" id="bar" style="width:42%"></div>
+        </div>
+        <div class="bar-ticks">
+          <span>0%</span><span>60% rec.</span><span>100%</span>
+        </div>
+        <div id="status-pill" class="status-pill">Optim — càrrega segura</div>
+      </div>
+
+      <div class="big-metric">
+        <div class="metric-label">Energia disponible</div>
+        <div class="metric-value" style="font-size:1.4rem;color:var(--text)" id="m-wh">3780 Wh</div>
+        <div class="metric-unit">watt·hora a les bateries</div>
+      </div>
+
+    </div>
+  </div>
+
+  <footer>
+    <span>CPD InnovateTech · Proposta de SAI/UPS · Projecte Transversal ASIXc1</span>
+    <span class="version">v1.0 · 2025</span>
+  </footer>
+</div>
+
+<script>
+  document.getElementById('hdate').textContent = new Date().toLocaleDateString('ca-ES');
+
+  const ids    = ['r540','r440','sw','fw','crac','misc'];
+  const labels = ['Servidors R540','Servidors R440','Switches xarxa','Firewall pfSense','CRAC climatitz.','Altres'];
+  const units  = [3, 2, 3, 1, 1, 1];
+
+  function upd() {
+    const vals = ids.map(id => +document.getElementById(id).value);
+    const va  = +document.getElementById('va').value;
+    const pf  = +document.getElementById('pf').value / 100;
+    const nu  = +document.getElementById('nu').value;
+    const eff = +document.getElementById('eff').value / 100;
+
+    document.getElementById('r540v').textContent = (vals[0]*3) + ' W';
+    document.getElementById('r440v').textContent = (vals[1]*2) + ' W';
+    document.getElementById('swv').textContent   = (vals[2]*3) + ' W';
+    document.getElementById('fwv').textContent   = vals[3] + ' W';
+    document.getElementById('cracv').textContent = vals[4] + ' W';
+    document.getElementById('miscv').textContent = vals[5] + ' W';
+    document.getElementById('vav').textContent   = va + ' VA';
+    document.getElementById('pfv').textContent   = pf.toFixed(2);
+    document.getElementById('nuv').textContent   = '× ' + nu;
+    document.getElementById('effv').textContent  = Math.round(eff*100) + ' %';
+
+    const totals = vals.map((v,i) => v * units[i]);
+    const total  = totals.reduce((a,b) => a+b, 0);
+    const saiW   = Math.round(va * pf * nu);
+    const Wh     = Math.round(va * nu * 0.7 * eff);
+    const autMin = total > 0 ? Math.round((Wh / total) * 60) : 0;
+    const loadPct = total > 0 ? Math.round(total / saiW * 100) : 0;
+
+    document.getElementById('m-total').textContent = total + ' W';
+    document.getElementById('m-sai').textContent   = saiW + ' W';
+    document.getElementById('m-wh').textContent    = Wh + ' Wh';
+    document.getElementById('m-aut').textContent   = autMin > 180 ? '+3h' : autMin;
+
+    const bar   = document.getElementById('bar');
+    const pill  = document.getElementById('status-pill');
+    const autEl = document.getElementById('m-aut');
+    bar.style.width = Math.min(loadPct, 100) + '%';
+    document.getElementById('pct-txt').textContent = loadPct + '%';
+
+    if (loadPct <= 60) {
+      bar.className = 'bar-fill';
+      pill.className = 'status-pill';
+      pill.textContent = 'Optim — carrega segura (<= 60%)';
+      autEl.className = 'metric-value';
+    } else if (loadPct <= 80) {
+      bar.className = 'bar-fill warn';
+      pill.className = 'status-pill warn';
+      pill.textContent = 'Acceptable — revisar ampliacio (<= 80%)';
+      autEl.className = 'metric-value warn';
+    } else {
+      bar.className = 'bar-fill bad';
+      pill.className = 'status-pill bad';
+      pill.textContent = 'SOBRECARREGAT — risc de tall (> 80%)';
+      autEl.className = 'metric-value bad';
+    }
+
+    const tbody = document.getElementById('tbody');
+    let rows = '';
+    totals.forEach((t, i) => {
+      const pct = total > 0 ? Math.round(t / total * 100) : 0;
+      rows += `<tr>
+        <td>${labels[i]}</td>
+        <td style="font-family:var(--mono);font-size:10px;color:var(--muted)">${units[i]}</td>
+        <td style="font-family:var(--mono);font-size:10px;color:var(--muted)">${vals[i]}</td>
+        <td style="font-family:var(--mono);font-size:11px">${t}</td>
+        <td><div class="pct-bar">
+          <div class="pct-mini"><div class="pct-mini-fill" style="width:${pct}%"></div></div>
+          <span class="pct-txt">${pct}%</span>
+        </div></td>
+      </tr>`;
+    });
+    rows += `<tr class="total-row">
+      <td colspan="3">TOTAL CPD</td>
+      <td>${total}</td>
+      <td><span class="pct-txt" style="color:var(--accent)">100%</span></td>
+    </tr>`;
+    tbody.innerHTML = rows;
+  }
+
+  upd();
+</script>
+</body>
+</html>
