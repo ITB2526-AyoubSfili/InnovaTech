@@ -37,8 +37,6 @@ El resultado es una infraestructura **escalable, segura y documentada** que perm
 | [`14-backups-eventos.md`](14-backups-eventos.md) | Copias de seguridad automáticas con eventos programados en MariaDB. |
 | [`15-roles-usuarios-script.md`](15-roles-usuarios-script.md) | Roles (admin, vendes, administracio, treballador) y script Bash de creación de usuarios. |
 | [`16-digitalizacion-seguridad.md`](16-digitalizacion-seguridad.md) | Transformación digital, seguridad física y lógica, importancia de los datos. |
-| [`imagenes/`](imagenes/) | Carpeta con todas las capturas de pantalla y diagramas. |
-| [`scripts/`](scripts/) | Playbooks de Ansible, script `crear_usuario.sh`, archivos SQL. |
 
 ---
 
