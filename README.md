@@ -8,7 +8,7 @@
 
 ---
 
-## Resumen ejecutivo
+## Resumen 
 
 Innovate Tech es una empresa tecnológica que necesita modernizar su infraestructura de comunicaciones y datos. Este proyecto consiste en diseñar e implantar un centro de procesamiento de datos (CPD) en la nube de AWS, junto con servicios multimedia (streaming de audio, vídeo y videoconferencia) y una base de datos corporativa completa.
 
@@ -99,8 +99,8 @@ El resultado es una infraestructura **escalable, segura y documentada** que perm
 - **Servidor central:** `ec2-logs` (10.0.1.201), puertos 514 TCP y UDP abiertos.
 - **Configuración servidor:** módulos `imudp` e `imtcp` habilitados en `/etc/rsyslog.conf`. Plantilla `RemoteLogs` que organiza los logs por hostname y programa en `/var/log/remote/<HOSTNAME>/<PROGRAMA>.log`.
 - **Configuración clientes:** línea `*.* @10.0.1.201:514` añadida en `/etc/rsyslog.conf` de cada máquina (automatizado con Ansible).
-- **Logs recibidos:** logs de SSH, systemd, CRON, servicios propios (nginx, icecast, jellyfin, mariadb) de las 7 instancias.
-- **Verificación:** `ls /var/log/remote/` muestra carpetas de los 7 hostnames. Contenido verificado con `cat /var/log/remote/ip-10-0-1-208/sshd.log`.
+- **Logs recibidos:** logs de SSH, systemd, servicios propios (nginx, icecast, jellyfin, mariadb) de las 7 instancias.
+
 
 ---
 
@@ -141,9 +141,9 @@ El resultado es una infraestructura **escalable, segura y documentada** que perm
 
 | Servicio | Download necesario / real | Upload necesario / real | Latencia límite / real | Estado |
 |---------|--------------------------|------------------------|----------------------|--------|
-| Audio MP3 | 0,2 / 749 Mbps | 0,2 / 8,31 Mbps | < 500 / 10,6 ms | ✅ Excelente |
-| Vídeo 1080p HLS | 8 / 749 Mbps | 8 / 8,31 Mbps | < 200 / 10,6 ms | ⚠️ Muy justo |
-| Videoconferencia | 4 / 749 Mbps | 4 / 8,31 Mbps | < 150 / 10,6 ms | ✅ Aceptable |
+| Audio MP3 | 0,2 / 749 Mbps | 0,2 / 8,31 Mbps | < 500 / 10,6 ms | Excelente |
+| Vídeo 1080p HLS | 8 / 749 Mbps | 8 / 8,31 Mbps | < 200 / 10,6 ms | Muy justo |
+| Videoconferencia | 4 / 749 Mbps | 4 / 8,31 Mbps | < 150 / 10,6 ms | Aceptable |
 
 **Clasificación del sistema: ACCEPTABLE.** El cuello de botella es la subida (8,31 Mbps): soporta un único stream o videollamada simultánea, pero no múltiples emisores en directo.
 
@@ -212,15 +212,9 @@ La solución moderniza Innovate Tech pasando de comunicaciones presenciales a un
 [Enlace al vídeo de YouTube]
 
 El vídeo muestra:
-1. **Introducción** — problema de Innovate Tech y solución propuesta.
+1. **Introducción** 
 2. **Demostración práctica:**
-   - Panel de Icecast2 y reproducción del stream de audio desde navegador.
-   - Stream de vídeo HLS y reproducción en Jellyfin.
-   - Videollamada con Jitsi Meet entre dos participantes.
-   - Consulta a la base de datos y ejecución del script `crear_usuario.sh`.
-   - Logs centralizados: `ls /var/log/remote/` con las 7 máquinas.
-   - Playbooks de Ansible: `ansible-playbook site.yml`.
-3. **Conclusión** — por qué la solución cumple los objetivos de Innovate Tech.
+3. **Conclusión** 
 
 ---
 
@@ -242,28 +236,15 @@ El vídeo muestra:
 
 ---
 
-## Resultados y conclusiones
 
-- ✅ CPD físico diseñado con redundancia Tier II (climatización N+1, doble SAI, doble circuito eléctrico).
-- ✅ 7 instancias EC2 en AWS, cada una dedicada a un servicio específico.
-- ✅ Streaming de audio (Icecast2) funcional con formatos MP3 y OGG desde navegador y clientes múltiples.
-- ✅ Streaming de vídeo HLS y Jellyfin accesibles remotamente con reproductor web personalizado.
-- ✅ Videoconferencia Jitsi Meet operativa con prueba real entre dos usuarios.
-- ✅ Análisis de ancho de banda con identificación del cuello de botella y propuestas de mejora.
-- ✅ Base de datos integral con modelo E/R, triggers de auditoría, roles diferenciados, script de usuarios y backup automático diario.
-- ✅ Logs de los 7 servidores centralizados en un único servidor rsyslog.
-- ✅ Configuración automatizada con Ansible (9 playbooks, 7 máquinas).
-- ✅ Documentación completa en Markdown publicada en GitHub.
 
----
+## Autores 
 
-## Autores y responsabilidades
-
-| Miembro | Responsabilidades principales |
-|---------|-------------------------------|
-| **Ayoub** | CPD físico, infraestructura AWS, servidor web, SFTP, LDAP |
-| **Didac** | Audio (Icecast2), vídeo (NGINX+Jellyfin), Jitsi Meet, ancho de banda, logs centralizados, Ansible |
-| **Faiver** | Base de datos (diseño E/R, SQL), triggers, script de usuarios, roles, backups |
+| Miembro    | 
+|------------|
+| **Ayoub**  | 
+| **Didac**  | 
+| **Faiver** |
 
 ---
 
@@ -272,4 +253,4 @@ El vídeo muestra:
 Este proyecto se entrega como trabajo académico para el ciclo formativo de **Administración de Sistemas Informáticos en Red (ASIX)** en el **Institut Tecnològic de Barcelona (ITB)**.  
 Queda prohibida su reproducción total o parcial sin autorización expresa de los autores.
 
-*Última actualización: 28 de mayo de 2026*
+
