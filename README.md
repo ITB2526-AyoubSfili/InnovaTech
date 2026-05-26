@@ -16,31 +16,29 @@ Se ha utilizado **Ansible** para automatizar la configuración de los servidores
 
 El resultado es una infraestructura **escalable, segura y documentada** que permite a Innovate Tech mejorar su comunicación interna y externa, distribuir contenidos digitales y gestionar su personal de forma eficiente.
 
----
-
 ## Estructura del repositorio
 
 | Archivo | Contenido |
 |---------|-----------|
-| `README.md` | Este documento. Visión general del proyecto. |
-| `01-cpd-fisico.md` | Diseño del CPD físico: ubicación, racks, climatización, SAI, seguridad, PRL. |
-| `02-arquitectura-aws.md` | Infraestructura en AWS: instancias EC2, VPC, grupos de seguridad, diagrama de red. |
-| `03-servidor-web-sftp.md` | Servidor web (NGINX) y servidor SFTP con autenticación LDAP. |
-| `04-servidor-ldap.md` | Directorio LDAP (OpenLDAP) para la gestión centralizada de usuarios. |
-| `05-centralizacion-logs.md` | Servidor central de logs con rsyslog. Configuración y comprobaciones. |
-| `06-ansible.md` | Automatización con Ansible: playbooks, inventario, configuración de usuarios y servicios. |
-| `07-servicio-audio.md` | Servidor de streaming de audio (Icecast2). Instalación, configuración y pruebas. |
-| `08-servicio-video.md` | Servidor de streaming de vídeo (NGINX RTMP + HLS) y Jellyfin. |
-| `09-videoconferencia.md` | Servidor de videoconferencia (Jitsi Meet con Docker). |
-| `10-amplada-banda.md` | Pruebas de ancho de banda, análisis y propuestas de mejora. |
-| `11-base-datos-diseno.md` | Diagrama Entidad-Relación y modelo relacional de la base de datos. |
-| `12-base-datos-implementacion.md` | Scripts SQL de creación de tablas e inserción de datos de prueba. |
-| `13-triggers-auditoria.md` | Triggers de control de cuotas, bloqueo de usuarios y auditoría. |
-| `14-backups-eventos.md` | Copias de seguridad automáticas con eventos programados en MariaDB. |
-| `15-roles-usuarios-script.md` | Roles (admin, vendes, administracio, treballador) y script Bash de creación de usuarios. |
-| `16-digitalizacion-seguridad.md` | Transformación digital, seguridad física y lógica, importancia de los datos. |
-| `imagenes/` | Carpeta con todas las capturas de pantalla y diagramas. |
-| `scripts/` | Playbooks de Ansible, script `crear_usuario.sh`, archivos SQL. |
+| [`README.md`](README.md) | Este documento. Visión general del proyecto. |
+| [`01-cpd-fisico.md`](01-cpd-fisico.md) | Diseño del CPD físico: ubicación, racks, climatización, SAI, seguridad, PRL. |
+| [`02-arquitectura-aws.md`](02-arquitectura-aws.md) | Infraestructura en AWS: instancias EC2, VPC, grupos de seguridad, diagrama de red. |
+| [`03-servidor-web-sftp.md`](03-servidor-web-sftp.md) | Servidor web (NGINX) y servidor SFTP con autenticación LDAP. |
+| [`04-servidor-ldap.md`](04-servidor-ldap.md) | Directorio LDAP (OpenLDAP) para la gestión centralizada de usuarios. |
+| [`05-centralizacion-logs.md`](05-centralizacion-logs.md) | Servidor central de logs con rsyslog. Configuración y comprobaciones. |
+| [`06-ansible.md`](06-ansible.md) | Automatización con Ansible: playbooks, inventario, configuración de usuarios y servicios. |
+| [`07-servicio-audio.md`](07-servicio-audio.md) | Servidor de streaming de audio (Icecast2). Instalación, configuración y pruebas. |
+| [`08-servicio-video.md`](08-servicio-video.md) | Servidor de streaming de vídeo (NGINX RTMP + HLS) y Jellyfin. |
+| [`09-videoconferencia.md`](09-videoconferencia.md) | Servidor de videoconferencia (Jitsi Meet con Docker). |
+| [`10-amplada-banda.md`](10-amplada-banda.md) | Pruebas de ancho de banda, análisis y propuestas de mejora. |
+| [`11-base-datos-diseno.md`](11-base-datos-diseno.md) | Diagrama Entidad-Relación y modelo relacional de la base de datos. |
+| [`12-base-datos-implementacion.md`](12-base-datos-implementacion.md) | Scripts SQL de creación de tablas e inserción de datos de prueba. |
+| [`13-triggers-auditoria.md`](13-triggers-auditoria.md) | Triggers de control de cuotas, bloqueo de usuarios y auditoría. |
+| [`14-backups-eventos.md`](14-backups-eventos.md) | Copias de seguridad automáticas con eventos programados en MariaDB. |
+| [`15-roles-usuarios-script.md`](15-roles-usuarios-script.md) | Roles (admin, vendes, administracio, treballador) y script Bash de creación de usuarios. |
+| [`16-digitalizacion-seguridad.md`](16-digitalizacion-seguridad.md) | Transformación digital, seguridad física y lógica, importancia de los datos. |
+| [`imagenes/`](imagenes/) | Carpeta con todas las capturas de pantalla y diagramas. |
+| [`scripts/`](scripts/) | Playbooks de Ansible, script `crear_usuario.sh`, archivos SQL. |
 
 ---
 
