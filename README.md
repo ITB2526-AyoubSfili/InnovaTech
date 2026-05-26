@@ -53,7 +53,7 @@ El resultado es una infraestructura **escalable, segura y documentada** que perm
 | ec2-audio | 10.0.1.60 | Streaming de audio (Icecast2) |
 | ec2-video | 10.0.1.23 | Streaming de vídeo (NGINX RTMP + Jellyfin) |
 | ec2-bbdd | 10.0.1.208 | Base de datos (MariaDB) |
-| ec2-logs | 10.0.1.201 | Logs centralizados (rsyslog) |
+| ec2-logs | 10.0.1.201 | Logs centralizados (rsyslog + ansible) |
 | ec2-jitsi | 10.0.1.17 | Videoconferencia (Jitsi Meet) |
 | ec2-ldap | 10.0.1.209 | Directorio LDAP (OpenLDAP) + SFTP |
 | ec2-web | 10.0.1.237 | Servidor web (NGINX) |
