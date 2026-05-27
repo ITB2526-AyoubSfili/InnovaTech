@@ -1,4 +1,4 @@
-# 📻 Servidor de Streaming de Audio — Icecast2 + FFmpeg
+# Servidor de Streaming de Audio — Icecast2 + FFmpeg
 
 Esta sección cubre el despliegue de un servidor de radiodifusión o streaming de audio utilizando **Icecast2** como servidor de streaming/distribución y **FFmpeg** como codificador de medios en tiempo real (fuente multimedia).
 
@@ -65,7 +65,7 @@ ubuntu@ip-10-0-1-60:~$ wget -O audio_prova2.mp3 "https://www.youtube.com/watch?v
 
 FFmpeg normalmente se interrumpe si la sesión SSH se cierra o sufre un timeout. Para dotar al sistema de persistencia en segundo plano las 24 horas del día, se utiliza la herramienta **`screen`**, que despliega terminales virtuales independientes desasociadas del ciclo de vida de la sesión SSH.
 
-### 🎵 Flujo de Streaming — Formato MP3
+###  Flujo de Streaming — Formato MP3
 
 **1. Crear e ingresar a una sesión virtual dedicada:**
 
@@ -89,7 +89,7 @@ La transmisión continuará operando de manera transparente en la instancia AWS.
 
 ---
 
-### 🎶 Flujo de Streaming — Formato OGG (Vorbis)
+###  Flujo de Streaming — Formato OGG (Vorbis)
 
 Icecast también soporta nativamente el contenedor OGG con compresión Vorbis.
 
@@ -115,7 +115,7 @@ ffmpeg -re -stream_loop -1 -i audio_prova.mp3 \
 
 ---
 
-### 🖥️ Comandos Útiles para el Control de Sesiones de `screen`
+###  Comandos Útiles para el Control de Sesiones de `screen`
 
 | Comando | Descripción |
 |---|---|
@@ -142,8 +142,8 @@ Una vez que FFmpeg se encuentra inyectando datos de forma continua, el estado y 
 
 | Recurso | URL |
 |---|---|
-| 🌐 Panel Web de Estado | `http://32.194.168.28:8000/` |
-| 📊 Estadísticas XML | `http://32.194.168.28:8000/admin/stats.xml` |
+|  Panel Web de Estado | `http://ip:8000/` |
+|  Estadísticas XML | `http://ip:8000/admin/stats.xml` |
 
 ### Métricas disponibles en `stats.xml`
 
