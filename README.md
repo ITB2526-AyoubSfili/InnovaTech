@@ -32,7 +32,7 @@ El resultado es una infraestructura **escalable, segura y documentada** que perm
 | [`09-videoconferencia.md`](09-videoconferencia.md) | Servidor de videoconferencia (Jitsi Meet con Docker). |
 | [`10-amplada-banda.md`](10-amplada-banda.md) | Pruebas de ancho de banda, análisis y propuestas de mejora. |
 | [`11-base-datos-diseno.md`](11-base-datos-diseno.md) | Diagrama Entidad-Relación y modelo relacional de la base de datos. |
-| [`12-base-datos-implementacion.md`](12-base-datos-implementacion.md) | Scripts SQL de creación de tablas e inserción de datos de prueba. |
+| [`12-base-datos-implementacion.md`](12-base-datos-implementacion-triggers.md) | Scripts SQL de creación de tablas e inserción de datos de prueba. |
 | [`13-triggers-auditoria.md`](13-triggers-auditoria.md) | Triggers de control de cuotas, bloqueo de usuarios y auditoría. |
 | [`14-backups-eventos.md`](14-backups-eventos.md) | Copias de seguridad automáticas con eventos programados en MariaDB. |
 | [`15-roles-usuarios-script.md`](15-roles-usuarios-script.md) | Roles (admin, vendes, administracio, treballador) y script Bash de creación de usuarios. |
