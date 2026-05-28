@@ -6,7 +6,7 @@
 **Vídeo demostración:** [https://drive.google.com/file/d/1JMvHhW3vPhSh7vjXW4Uku7a2k6_LjNJS/view?usp=sharing]
 
 
-['Informe completo proyecto'](Informe_completo_proyecto_ASIXc1-G6.pdf)
+['Informe completo proyecto'](Informe-completo-proyecto-ASIXc1-G6.pdf)
 ---
 
 ## Resumen 
