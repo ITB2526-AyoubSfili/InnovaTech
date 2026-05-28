@@ -1,4 +1,4 @@
-# 🖥️ PROYECTO TRANSVERSAL ASIXc1
+# PROYECTO TRANSVERSAL ASIXc1
 
 # InnovateTech
 
@@ -268,7 +268,7 @@ Para garantizar la continuidad operativa se han instalado:
 
 ---
 
-# 📊 Conclusiones
+# Conclusiones
 
 La infraestructura del CPD de InnovateTech ha sido diseñada siguiendo criterios profesionales de disponibilidad, seguridad y escalabilidad.
 
