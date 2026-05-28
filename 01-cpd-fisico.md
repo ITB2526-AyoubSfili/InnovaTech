@@ -249,6 +249,44 @@ Para garantizar la continuidad operativa se han instalado:
 * 2 × APC Smart-UPS RT 3000VA.
 * Tecnología Online (Doble Conversión).
 
+#  4. Seguridad Física y Lógica
+
+---
+
+## 4.1 Seguridad Física
+
+La seguridad física de la sala se ha diseñado en múltiples capas. El objetivo principal es impedir el acceso de personas no autorizadas y, en caso de acceso indebido, minimizar cualquier posible daño o exfiltración de información.
+
+A continuación, se detallan los elementos de seguridad implementados:
+
+| Elemento                   | Descripción                                                                                                                                                                                                                                                                                                                  |
+| -------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Control de acceso**      | Lector biométrico de huella dactilar (**Suprema BioEntry W2**) combinado con tarjeta RFID como segundo factor de autenticación. Cada entrada y salida queda registrada con fecha, hora, usuario y duración de la visita. El acceso está restringido exclusivamente al personal de TI autorizado.                             |
+| **Videovigilancia**        | 4 cámaras IP PTZ (**Axis P3245-V, 4MP**) instaladas en las esquinas de la sala, además de una cámara adicional en el pasillo de acceso. Grabación continua 24/7 con retención de 30 días en un NVR local cifrado. Monitorización en tiempo real desde la consola de seguridad.                                               |
+| **Detección de incendios** | Sistema **VESDA (Very Early Smoke Detection Apparatus)** que analiza continuamente el aire del falso techo para detectar partículas de humo antes de que sean visibles. También se han instalado sensores térmicos cada 3 metros. El panel de alarma es independiente y envía alertas automáticas por SMS al personal de TI. |
+| **Extinción de incendios** | Sistema de extinción mediante gas **Novec 1230 (3M)**, un agente limpio que no deja residuos ni daña los equipos electrónicos. La activación puede realizarse automáticamente mediante sensores o manualmente mediante pulsador de emergencia. El tiempo de descarga es inferior a 10 segundos.                              |
+| **Evacuación**             | Puerta principal con control de acceso y puerta de emergencia en el lateral norte con barra antipánico. Señalización LED autónoma con batería de respaldo de 3 horas. Pasillos de 90 cm entre racks para facilitar la evacuación.                                                                                            |
+| **Estructura de la sala**  | Puerta blindada de acero clase **RC3** con marco reforzado. Paredes de hormigón armado de 20 cm. Sala completamente cerrada, sin ventanas ni aperturas exteriores. Sensores de inundación instalados bajo el suelo técnico con alertas automáticas.                                                                          |
+
+---
+
+##  4.2 Seguridad Lógica
+
+La seguridad lógica complementa la seguridad física. No basta con proteger el acceso a la sala si los sistemas informáticos no están correctamente securizados.
+
+Por este motivo, se han implementado diferentes capas de protección orientadas a garantizar la confidencialidad, integridad y disponibilidad de la información.
+
+| Elemento                        | Descripción                                                                                                                                                                                                                                                                                                |
+| ------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Autenticación**               | Todos los servicios se autentican mediante **OpenLDAP (ec2-ldap)**. Los administradores utilizan autenticación de doble factor (**TOTP**) mediante Google Authenticator. El servicio SFTP se autentica contra LDAP utilizando PAM. El acceso directo con el usuario `root` está deshabilitado.             |
+| **Acceso SSH**                  | El acceso a todas las máquinas se realiza exclusivamente mediante claves pública/privada. No se permiten contraseñas SSH. Cada usuario dispone únicamente de los permisos necesarios para desempeñar su trabajo. Todas las conexiones SSH quedan registradas en Graylog.                                   |
+| **Firewall**                    | Firewall **pfSense** desplegado sobre **Netgate 2100** con política por defecto de bloqueo total (*deny all*). Las reglas se aplican por capas: perímetro (Internet ↔ CPD) y red interna (entre instancias EC2). El sistema IDS/IPS **Snort** analiza el tráfico en tiempo real.                           |
+| **Monitorización**              | **Graylog 5 (ec2-logs)** centraliza los registros de todas las instancias EC2 mediante Syslog. Cuando se detecta un evento crítico (intento de acceso no autorizado, caída de servicios o uso elevado de recursos) se generan alertas automáticas por correo electrónico y Telegram.                       |
+| **Copias de seguridad**         | Copias de seguridad diarias cifradas mediante **AES-256** almacenadas en un bucket privado de **Amazon S3**. Retención de 30 días. Cada mes se verifica la integridad de las copias utilizando checksums **SHA-256**. Además, se realiza una copia semanal en **S3 Glacier** para archivado a largo plazo. |
+| **RAID**                        | Configuración **RAID 1** para los discos del sistema operativo, proporcionando tolerancia al fallo de un disco. Configuración **RAID 5** para los datos de logs y bases de datos. Cada servidor dispone de un disco hot-swap de repuesto para recuperación inmediata.                                      |
+| **Gestión de vulnerabilidades** | Las actualizaciones de seguridad se aplican automáticamente mediante **unattended-upgrades** en todas las instancias. Se realiza un análisis mensual de vulnerabilidades con **OpenVAS** y una revisión trimestral de permisos y roles LDAP.                                                               |
+
+
 ### Consumo estimado
 
 | Elemento                    | Consumo     |
