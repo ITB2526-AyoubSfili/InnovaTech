@@ -107,6 +107,11 @@ ffmpeg -re -stream_loop -1 -i audio_prova.mp3 \
   -content_type application/ogg \
   icecast://source:pirineus@localhost:8000/stream.ogg
 ```
+**2.1 Ejecutar la codificación AAC:**
+
+```bash
+screen -dmS aac-stream ffmpeg -re -stream_loop -1 -i ~/audio_prova.mp3 -vn -acodec aac -ab 128k -f adts icecast://source:pirineus@$IP_PUBLICA:8000/stream.aac
+```
 
 **3. Desasociar la pantalla:** `Ctrl + A` → `D`
 
