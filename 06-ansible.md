@@ -18,15 +18,15 @@ En aquest projecte, Ansible automatitza la configuració de **7 instàncies EC2*
 
 ### Nodes gestionats (7 instàncies)
 
-| Nom | IP privada | IP pública | Servei principal |
+| Nom | IP privada  Servei principal |
 |-----|-----------|-----------|------------------|
-| audio | 10.0.1.60 | 32.194.168.28 | Icecast2 (streaming de audio) |
-| video | 10.0.1.23 | 3.236.114.18 | NGINX RTMP + Jellyfin (vídeo) |
-| bd | 10.0.1.208 | — | MariaDB (base de dades) |
-| jitsi | 10.0.1.17 | 98.92.101.207 | Jitsi Meet (videoconferència) |
-| ldap | 10.0.1.209 | — | OpenLDAP + SFTP |
-| web | 10.0.1.237 | — | NGINX (servidor web) |
-| logs | 10.0.1.201 | — | rsyslog (logs centralitzats) |
+| audio | 10.0.1.60  Icecast2 (streaming de audio) |
+| video | 10.0.1.23  NGINX RTMP + Jellyfin (vídeo) |
+| bd | 10.0.1.208  MariaDB (base de dades) |
+| jitsi | 10.0.1.17  Jitsi Meet (videoconferència) |
+| ldap | 10.0.1.209  OpenLDAP + SFTP |
+| web | 10.0.1.237  NGINX (servidor web) |
+| logs | 10.0.1.201 rsyslog (logs centralitzats) |
 
 ---
 
