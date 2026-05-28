@@ -1,10 +1,10 @@
-# ⚙️ Automatización con Ansible — InnovateTech
+#  Automatización con Ansible — InnovateTech
 
 El objetivo de estas pruebas es comprobar que Ansible puede conectarse a todos los servidores, ejecutar los playbooks correctamente y que los cambios se aplican en las 7 máquinas de forma simultánea.
 
 ---
 
-## ✅ 1. Comprobación de conectividad con todos los servidores
+##  1. Comprobación de conectividad con todos los servidores
 
 Se verificó que Ansible pudiera conectarse a las 7 instancias EC2 mediante el módulo ping.
 
@@ -21,7 +21,7 @@ sudo ansible servidors -m ping
 
 ---
 
-## ✅ 2. Ejecución del playbook de usuario administrador
+##  2. Ejecución del playbook de usuario administrador
 
 Se ejecutó el playbook que crea el usuario `adminitb` con permisos sudo y clave SSH en los 7 servidores simultáneamente.
 
@@ -37,7 +37,7 @@ ansible-playbook /home/ubuntu/playbook_admin.yml
 
 ---
 
-## ✅ 3. Verificación del usuario adminitb en todas las máquinas
+##  3. Verificación del usuario adminitb en todas las máquinas
 
 Se comprobó que el usuario `adminitb` se hubiera creado correctamente en todos los servidores y perteneciera al grupo sudo.
 
@@ -53,7 +53,7 @@ ansible servidors -m command -a "id adminitb"
 
 ---
 
-## ✅ 4. Ejecución del playbook de logs centralizados
+##  4. Ejecución del playbook de logs centralizados
 
 Se ejecutó el playbook que configura el agente rsyslog en todos los servidores para enviar los logs al servidor central.
 
@@ -69,7 +69,7 @@ ansible-playbook /home/ubuntu/playbook_rsyslog.yml
 
 ---
 
-## ✅ 5. Configuración de rsyslog en los clientes
+##  5. Configuración de rsyslog en los clientes
 
 Se verificó que el archivo `/etc/rsyslog.conf` de cada cliente tuviera la línea de redirección al servidor central `*.* @10.0.1.201:514`.
 
@@ -79,7 +79,7 @@ Se verificó que el archivo `/etc/rsyslog.conf` de cada cliente tuviera la líne
 
 ---
 
-## ✅ 6. Logs recibidos en el servidor central
+##  6. Logs recibidos en el servidor central
 
 Se comprobó que el servidor de logs estuviera recibiendo correctamente los registros de todas las máquinas de la red.
 
@@ -96,7 +96,7 @@ sudo ls /var/log/remote/ip-10-0-1-*/
 
 ---
 
-# 📊 Conclusión
+#  Conclusión
 
 Las pruebas realizadas permitieron verificar el correcto funcionamiento de la automatización con Ansible.
 
