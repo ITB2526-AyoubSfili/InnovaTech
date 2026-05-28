@@ -1,18 +1,18 @@
 # 04 - Servidor LDAP (OpenLDAP)
 
-## Descripció
+## Descripción
 
-El directori actiu s'ha instal·lat sobre una instància EC2 separada (`ip-10-0-1-209`), accessible a la IP pública `54.85.232.177`.
+El directorio activo se ha instalado sobre una instancia EC2 separada (`ip-10-0-1-209`), accesible en la IP pública `54.85.232.177`.
 
-- **Domini**: `innovatetech.local`
+- **Dominio**: `innovatetech.local`
 - **Base DN**: `dc=innovatetech,dc=local`
 - **URI**: `ldap://10.0.1.209`
 
 ---
 
-## Instal·lació
+## Instalación
 
-### Pas 1: Instal·lació d'OpenLDAP
+### Paso 1: Instalación de OpenLDAP
 
 ```bash
 sudo apt update
@@ -20,18 +20,18 @@ sudo apt install slapd ldap-utils -y
 sudo dpkg-reconfigure slapd
 ```
 
-Durant la configuració s'han establert els paràmetres següents:
-- **Domini**: `innovatetech.local`
-- **Organització**: `InnovateTech`
-- **Contrasenya admin**: configurada
+Durante la configuración se han establecido los siguientes parámetros:
+- **Dominio**: `innovatetech.local`
+- **Organización**: `InnovateTech`
+- **Contraseña admin**: configurada
 
-### Pas 2: Verificació del servei
+### Paso 2: Verificación del servicio
 
 ```bash
 sudo systemctl status slapd
 ```
 
-### Pas 3: Comprovació de l'estructura LDAP
+### Paso 3: Comprobación de la estructura LDAP
 
 ```bash
 sudo ldapsearch -x -H ldap://localhost -b dc=innovatetech,dc=local
@@ -39,11 +39,11 @@ sudo ldapsearch -x -H ldap://localhost -b dc=innovatetech,dc=local
 
 ---
 
-## Creació d'usuaris
+## Creación de usuarios
 
-### Pas 1: Creació del primer usuari (sftpuser1)
+### Paso 1: Creación del primer usuario (sftpuser1)
 
-Creem el fitxer `usuari.ldif`:
+Creamos el archivo `usuari.ldif`:
 
 ```ldif
 dn: uid=sftpuser1,ou=usuaris,dc=innovatetech,dc=local
@@ -66,9 +66,9 @@ userPassword: Password123
 ldapadd -x -D "cn=admin,dc=innovatetech,dc=local" -W -f usuari.ldif
 ```
 
-### Pas 2: Creació del segon usuari (sftpuser2)
+### Paso 2: Creación del segundo usuario (sftpuser2)
 
-Creem el fitxer `usuario2.ldif`:
+Creamos el archivo `usuario2.ldif`:
 
 ```ldif
 dn: uid=sftpuser2,ou=usuaris,dc=innovatetech,dc=local
@@ -91,29 +91,29 @@ userPassword: Password123
 ldapadd -x -D "cn=admin,dc=innovatetech,dc=local" -W -f usuario2.ldif
 ```
 
-### Pas 3: Configuració de contrasenyes
+### Paso 3: Configuración de contraseñas
 
 ```bash
 ldappasswd -x -D "cn=admin,dc=innovatetech,dc=local" -W -s Password123 "uid=sftpuser1,ou=usuaris,dc=innovatetech,dc=local"
 ldappasswd -x -D "cn=admin,dc=innovatetech,dc=local" -W -s Password123 "uid=sftpuser2,ou=usuaris,dc=innovatetech,dc=local"
 ```
 
-### Pas 4: Verificació dels usuaris creats
+### Paso 4: Verificación de los usuarios creados
 
 ```bash
 ldapsearch -x -b "dc=innovatetech,dc=local" "(objectClass=inetOrgPerson)"
 ```
 
-Resultat esperat: 2 usuaris (`sftpuser1` i `sftpuser2`) amb `uidNumber` 2001 i 2002 respectivament.
+Resultado esperado: 2 usuarios (`sftpuser1` y `sftpuser2`) con `uidNumber` 2001 y 2002 respectivamente.
 
 ---
 
-## Credencials d'accés
+## Credenciales de acceso
 
-| Paràmetre | Valor |
+| Parámetro | Valor |
 |-----------|-------|
 | Servidor | ldap://10.0.1.209 |
 | Base DN | dc=innovatetech,dc=local |
 | Admin DN | cn=admin,dc=innovatetech,dc=local |
-| Usuari 1 | sftpuser1 / Password123 |
-| Usuari 2 | sftpuser2 / Password123 |
+| Usuario 1 | sftpuser1 / Password123 |
+| Usuario 2 | sftpuser2 / Password123 |
