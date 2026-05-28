@@ -1,4 +1,4 @@
-**1.1. Diseño Entidad-Relación y Modelo Relacional**
+# 1.1. Diseño Entidad-Relación y Modelo Relacional**
 
 ¿Qué es un diagrama E/R y para qué sirve?
 
