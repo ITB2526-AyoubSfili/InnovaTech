@@ -4,7 +4,7 @@
 **Miembros:** Ayoub, Didac, Faiver  
 **Fecha de entrega:** 28 de mayo de 2026  
 **Vídeo demostración:** [https://drive.google.com/file/d/1JMvHhW3vPhSh7vjXW4Uku7a2k6_LjNJS/view?usp=sharing]
-
+**Informe completo proyecto **(../Informe%20completo%20proyecto%20ASIXc1%20G6.pdf)
 ---
 
 ## Resumen 
