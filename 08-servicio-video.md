@@ -373,38 +373,6 @@ sudo chmod 644 /opt/videos/pelicula.mp4
 
 
 
-## Proves i validació
-
-### Test 1: Servei actiu
-
-```bash
-sudo systemctl status jellyfin
-# Expected: active (running)
-```
-
-### Test 2: Vídeo a la biblioteca
-
-1. Obrir `http://<IP>:8096`
-2. Anar a **Libraries** → **Movies**
-3. Confirmar que "Willy" apareix a la llista
-4. Clicar i veure les metadades (títol, any, durada, cartell)
-
-### Test 3: Reproducció en navegador
-
-1. Clicar **Play** en el vídeo "Willy"
-2. Verificar que s'inicia la reproducció sense errors
-3. Provar els controls: pausa, volum, pantalla completa
-4. Avançar en el timeline per comprovar la qualitat
-
-### Test 4: Accés remote (des d'una altra màquina)
-
-```bash
-# Desde qualsevol ordenador amb accés a internet
-curl http://<IP-pública>:8096/
-# Expected: HTML de la pàgina de Jellyfin
-```
-
----
 
 ## Resolució de problemes
 
@@ -418,18 +386,6 @@ curl http://<IP-pública>:8096/
 
 ---
 
-## Referència ràpida
-
-| Acció | Comanda |
-|-------|---------|
-| Instal·lar | `curl https://repo.jellyfin.org/install-debuntu.sh \| bash` |
-| Iniciar | `sudo systemctl start jellyfin` |
-| Parar | `sudo systemctl stop jellyfin` |
-| Veure logs | `sudo journalctl -u jellyfin -f` |
-| Accedir web | `http://<IP>:8096` |
-| Directori vídeos | `/opt/videos` |
-| Usuari servei | `jellyfin` |
-| Port | `8096` |
 
 ---
 
