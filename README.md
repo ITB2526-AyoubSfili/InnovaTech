@@ -3,8 +3,7 @@
 **Título del proyecto:** pro-asixc1-grup  
 **Miembros:** Ayoub, Didac, Faiver  
 **Fecha de entrega:** 28 de mayo de 2026  
-**Repositorio GitHub:** [enlace al repositorio]  
-**Vídeo demostración:** [enlace al vídeo]
+**Vídeo demostración:** [https://drive.google.com/file/d/1JMvHhW3vPhSh7vjXW4Uku7a2k6_LjNJS/view?usp=sharing]
 
 ---
 
