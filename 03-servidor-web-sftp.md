@@ -1,186 +1,215 @@
-# 04 - Servidor RTMP i Streaming HLS
+# 03 - Servidor Web i SFTP
 
-## Introducció
+## Servidor de Web (Nginx)
 
-Tot i que **RTMP** ofereix una latència molt baixa, els navegadors web moderns no suporten la reproducció directa d’aquest protocol de forma nativa a causa de l’obsolescència d’Adobe Flash.
+El servidor web s'ha instal·lat utilitzant **Nginx** sobre una instància EC2 (`ip-10-0-1-237`), accessible públicament a la IP `3.219.224.163`.
 
-Per solucionar-ho, el flux RTMP es converteix a **HLS (HTTP Live Streaming)**, dividint el vídeo en petits fragments transportables via HTTP estàndard. Això permet compatibilitat total amb navegadors i dispositius mòbils utilitzant biblioteques JavaScript com `hls.js`.
-
----
-
-## Instal·lació de NGINX i el Mòdul RTMP
-
-El servidor de streaming s’ha desplegat sobre una instància EC2 (`ip-10-0-1-60`) utilitzant **NGINX** amb el mòdul oficial RTMP.
-
-### Pas 1: Instal·lació de NGINX i RTMP
+### Pas 1: Instal·lació de Nginx
 
 ```bash
 sudo apt update
-sudo apt install nginx libnginx-mod-rtmp -y
+sudo apt install nginx -y
 ```
 
----
-
-## Creació del Directori Temporal HLS
-
-Per emmagatzemar els fragments `.ts` i les playlists `.m3u8` generades en temps real, es crea el directori temporal `/tmp/hls`.
-
-### Pas 2: Creació del directori
+### Pas 2: Verificació del servei
 
 ```bash
-sudo mkdir -p /tmp/hls
-sudo chown -R www-data:www-data /tmp/hls
+sudo systemctl status nginx
 ```
 
----
+### Pas 3: Comprovació des del navegador
 
-## Configuració Avançada de NGINX
+Accedim a `http://3.219.224.163` des del navegador i verifiquem que nginx respon correctament.
 
-Es modifica el fitxer principal de configuració de NGINX per habilitar:
-
-- El servidor RTMP
-- La generació automàtica d’HLS
-- La distribució HTTP dels fragments multimèdia
-
-### Pas 3: Edició del fitxer nginx.conf
+### Pas 4: Instal·lació de PHP per la pàgina dinàmica
 
 ```bash
-sudo nano /etc/nginx/nginx.conf
+sudo apt install php php-mysql php-fpm php-ldap -y
+sudo systemctl restart nginx php8.3-fpm
+```
+
+### Pas 5: Configuració de Nginx per usar PHP
+
+```bash
+sudo nano /etc/nginx/sites-available/default
 ```
 
 Configuració aplicada:
 
 ```nginx
-worker_processes auto;
+server {
+    listen 80;
+    root /var/www/html;
+    index index.php index.html;
 
-events {
-    worker_connections 1024;
-}
-
-rtmp {
-    server {
-        listen 1935;
-        chunk_size 4096;
-
-        application live {
-            live on;
-            record off;
-
-            hls on;
-            hls_path /tmp/hls;
-            hls_fragment 3;
-            hls_playlist_length 60;
-        }
+    location / {
+        try_files $uri $uri/ =404;
     }
-}
 
-http {
-    include       mime.types;
-    default_type  application/octet-stream;
-
-    sendfile on;
-    tcp_nopush on;
-
-    server {
-        listen 8080;
-
-        location /hls {
-            types {
-                application/vnd.apple.mpegurl m3u8;
-                video/mp2t ts;
-            }
-
-            root /tmp;
-            add_header Cache-Control no-cache;
-            add_header Access-Control-Allow-Origin *;
-        }
+    location ~ \.php$ {
+        include snippets/fastcgi-php.conf;
+        fastcgi_pass unix:/run/php/php8.3-fpm.sock;
     }
 }
 ```
 
+```bash
+sudo systemctl restart nginx php8.3-fpm
+```
+
 ---
 
-## Reinici i Verificació del Servei
+## Servidor SFTP
 
-Una vegada aplicada la configuració, es valida la sintaxi i es reinicia NGINX.
+El servei SFTP s'ha configurat al mateix servidor que el web (`ip-10-0-1-237`), autenticant els usuaris mitjançant **OpenLDAP**.
 
-### Pas 4: Validació i reinici
+### Pas 1: Configuració del subsistema SFTP a SSH
 
 ```bash
-sudo nginx -t
-sudo systemctl restart nginx
-sudo systemctl status nginx
+sudo nano /etc/ssh/sshd_config
 ```
 
----
-
-## Emissió RTMP
-
-Per publicar el flux de vídeo cap al servidor RTMP es pot utilitzar **OBS Studio**.
-
-### Configuració d’OBS
-
-| Paràmetre | Valor |
-|----------|--------|
-| Service | Custom |
-| Server | rtmp://IP_PUBLICA/live |
-| Stream Key | stream |
-
-Exemple:
-
-```text
-rtmp://3.219.224.163/live
-```
-
-Clau d’stream:
-
-```text
-stream
-```
-
----
-
-## Reproducció HLS des del navegador
-
-Una vegada iniciada l’emissió RTMP, NGINX genera automàticament:
-
-- Fragments `.ts`
-- Playlist `.m3u8`
-
-URL de reproducció:
-
-```text
-http://3.219.224.163:8080/hls/stream.m3u8
-```
-
----
-
-## Verificació dels Fitxers HLS
-
-Per comprovar que el servidor està generant correctament els fragments multimèdia:
-
-### Pas 5: Comprovació dels fitxers generats
+S'ha afegit la configuració següent al final del fitxer:
 
 ```bash
-ls -lah /tmp/hls
+Match Group sftpusers
+    ChrootDirectory /home/%u
+    ForceCommand internal-sftp
+    PasswordAuthentication yes
+    PubkeyAuthentication no
+```
+
+### Pas 2: Creació del grup i directori d'uploads
+
+```bash
+sudo groupadd sftpusers
+sudo mkdir -p /home/sftpuser1/uploads
+sudo chown 2001:2001 /home/sftpuser1/uploads
+```
+
+### Pas 3: Comprovació de la connexió SFTP
+
+```bash
+sftp sftpuser1@localhost
+```
+
+Una vegada dins:
+
+```bash
+cd uploads
+put /etc/hostname prueba.txt
+ls
+exit
+```
+
+---
+
+## Integració SFTP + LDAP
+
+Per tal que el servidor SFTP autentiqui els usuaris mitjançant LDAP, s'ha configurat **nslcd** i **PAM** al servidor web.
+
+### Pas 1: Instal·lació dels paquets necessaris
+
+```bash
+sudo apt install libnss-ldapd libpam-ldapd -y
+```
+
+Durant la instal·lació s'ha configurat:
+- **URI LDAP**: `ldap://10.0.1.209`
+- **Base DN**: `dc=innovatetech,dc=local`
+
+### Pas 2: Configuració de nslcd
+
+```bash
+sudo nano /etc/nslcd.conf
+```
+
+Configuració aplicada:
+
+```bash
+uri ldap://10.0.1.209/
+base dc=innovatetech,dc=local
+tls_reqcert never
+```
+
+### Pas 3: Configuració de nsswitch
+
+```bash
+cat /etc/nsswitch.conf | grep passwd
+```
+
+Ha de mostrar:
+
+```
+passwd: files ldap
+```
+
+### Pas 4: Reinici dels serveis
+
+```bash
+sudo systemctl restart nslcd ssh
+```
+
+### Pas 5: Verificació que el sistema resol usuaris LDAP
+
+```bash
+getent passwd sftpuser1
 ```
 
 Resultat esperat:
 
-```text
-stream.m3u8
-stream0.ts
-stream1.ts
-stream2.ts
+```
+sftpuser1:x:2001:2001:sftpuser1:/home/sftpuser1:/bin/bash
+```
+
+L'`uid=2001` confirma que l'usuari ve de **LDAP** i no del sistema local.
+
+### Pas 6: Prova de connexió SFTP autenticada via LDAP
+
+```bash
+sftp sftpuser1@localhost
+```
+
+```bash
+cd uploads
+put /etc/hostname prueba_ldap.txt
+ls
+exit
 ```
 
 ---
 
-## Resultat Final
+## Pàgina Web amb autenticació LDAP i connexió a la BD
 
-El servidor permet:
+S'ha desenvolupat una aplicació web en PHP que:
+- Requereix **autenticació via LDAP** per accedir
+- Consulta la **base de dades MariaDB** en temps real
+- Mostra totes les taules de la BD d'InnovateTech
 
-- Recepció de vídeo via RTMP
-- Conversió automàtica a HLS
-- Distribució web compatible amb navegadors moderns
-- Reproducció en temps real des de qualsevol dispositiu compatible
+### Pas 1: Creació de l'usuari de BD per la web
+
+A la màquina Database-Server (`ip-10-0-1-208`):
+
+```bash
+mysql -u root -ppirineus -e "CREATE USER 'webuser'@'%' IDENTIFIED BY 'pirineus'; GRANT SELECT ON innovatetech.* TO 'webuser'@'%'; FLUSH PRIVILEGES;"
+```
+
+### Pas 2: Comprovació dinàmica
+
+Per verificar que la web és dinàmica, modifiquem un registre a la BD:
+
+```bash
+mysql -u root -ppirineus innovatetech -e "UPDATE Empleat SET telefon='111111111' WHERE dni='12345678A';"
+```
+
+En recarregar la pàgina web, el canvi es reflecteix immediatament.
+
+---
+
+## Credencials d'accés
+
+| Servei | URL / Adreça | Usuari | Contrasenya |
+|--------|-------------|--------|-------------|
+| Web | http://3.219.224.163 | sftpuser1 | Password123 |
+| SFTP | sftp sftpuser1@3.219.224.163 | sftpuser1 | Password123 |
+| BD (web) | 10.0.1.208 | webuser | pirineus |
