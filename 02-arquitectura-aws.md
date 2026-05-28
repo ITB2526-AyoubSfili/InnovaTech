@@ -61,7 +61,11 @@ Se han habilitado puertos específicos como:
 | 443    | TCP       | HTTPS                                   |
 | 3306   | TCP       | MariaDB                                 |
 | 5060   | UDP/TCP   | Servicios de comunicación               |
+| 8000   | TCP       | Servicios de audio                      |
+| 8080   | TCP       | Servicios de streaming                  |
+| 8096   | TCP       | Servicios de streaming                  |
 | 10000 | UDP       | Tráfico multimedia de videoconferencias |
+
 
 ### Medidas de Seguridad
 
