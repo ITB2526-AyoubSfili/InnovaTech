@@ -1,10 +1,10 @@
-# 📂 3.2.6. Gestión de Datos y Seguridad de Usuarios
+# 3.2.6. Gestión de Datos y Seguridad de Usuarios
 
 Este apartado detalla la fase final de la implementación: la carga de datos para pruebas de estrés, la automatización del alta de usuarios y la configuración del modelo de seguridad basado en roles.
 
 ---
 
-## 📥 1. Datos de Prueba (Dataset de Validación)
+## 1. Datos de Prueba (Dataset de Validación)
 
 Se ha insertado un dataset completo para validar la integridad referencial y el correcto funcionamiento de los triggers de cuotas.
 
@@ -46,7 +46,7 @@ INSERT INTO Trucada (
 
 ---
 
-## 📜 2. Script Avanzado de Creación de Usuarios (`crear_usuarios.sh`)
+## 2. Script Avanzado de Creación de Usuarios (`crear_usuarios.sh`)
 
 Con el objetivo de automatizar completamente la gestión de usuarios y minimizar errores administrativos, se ha desarrollado un script avanzado en Bash que genera dinámicamente los permisos correspondientes para cada rol del sistema y permite su ejecución inmediata sobre MariaDB.
 
@@ -271,7 +271,7 @@ Rol asignado: vendes
 
 ---
 
-## 🔐 3. Modelo de Roles (RBAC)
+## 3. Modelo de Roles (RBAC)
 
 Se ha implementado un control de acceso basado en roles para cumplir con la normativa de protección de datos (RGPD).
 
@@ -325,7 +325,7 @@ Se intentó registrar una llamada que superaba el límite diario establecido par
 
 ---
 
-## 📊 Conclusiones
+## Conclusiones
 
 La implementación desarrollada proporciona:
 
