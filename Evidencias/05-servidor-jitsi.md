@@ -1,10 +1,10 @@
-# 📹 Servidor de Videoconferencias (Jitsi Meet)
+#  Servidor de Videoconferencias (Jitsi Meet)
 
 El objetivo de estas pruebas es comprobar que el servidor Jitsi Meet funciona correctamente y que múltiples usuarios pueden conectarse y realizar videollamadas.
 
 ---
 
-## ✅ 1. Videollamada con múltiples participantes
+##  1. Videollamada con múltiples participantes
 
 Se realizó una videollamada de prueba con varios participantes conectados simultáneamente.
 
