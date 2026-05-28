@@ -292,11 +292,11 @@ SHOW GRANTS FOR 'joan_vendes'@'localhost';
 
 ---
 
-## ✅ 4. Verificación de Funcionamiento
+##  4. Verificación de Funcionamiento
 
 Se han realizado pruebas cruzadas para asegurar el correcto funcionamiento del sistema de seguridad.
 
-### 🔒 Intento de Acceso No Autorizado
+###  Intento de Acceso No Autorizado
 
 **Caso:**
 
