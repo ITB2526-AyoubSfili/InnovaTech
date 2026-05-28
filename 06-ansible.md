@@ -1,10 +1,10 @@
-# Automatització amb Ansible — InnovateTech
+# Automatización con Ansible — InnovateTech
 
-## Visió general
+## Visión general
 
-**Ansible** és una eina d'automatització que permet desplegar, configurar i mantenir infraestructures de manera ràpida i repetible sense necessitat d'instal·lar agents en les màquines destí.
+**Ansible** es una herramienta de automatización que permite desplegar, configurar y mantener infraestructuras de manera rápida y repetible sin necesidad de instalar agentes en las máquinas destino.
 
-En aquest projecte, Ansible automatitza la configuració de **7 instàncies EC2** en AWS, creant usuaris administradors, configurant logs centralitzats, instal·lant serveis (Icecast2, NGINX, Jellyfin, MariaDB, Jitsi, OpenLDAP) i sincronitzant els ajustaments entre totes les màquines.
+En este proyecto, Ansible automatiza la configuración de **7 instancias EC2** en AWS, creando usuarios administradores, configurando logs centralizados, instalando servicios (Icecast2, NGINX, Jellyfin, MariaDB, Jitsi, OpenLDAP) y sincronizando los ajustes entre todas las máquinas.
 
 ---
 
@@ -12,53 +12,50 @@ En aquest projecte, Ansible automatitza la configuració de **7 instàncies EC2*
 
 ### Controlador Ansible
 
-- **Màquina:** EC2 `ip-10-0-1-201` (Servidor de logs centralitzats)
-- **Ubicació dels fitxers:** `/home/ubuntu/`
-- **Clau privada SSH:** `/home/ubuntu/.ssh/labsuser.pem`
-
+- **Máquina:** EC2 `ip-10-0-1-201` (Servidor de logs centralizados)
+- **Ubicación de los archivos:** `/home/ubuntu/`
+- **Clave privada SSH:** `/home/ubuntu/.ssh/labsuser.pem`
 
 ---
 
-## Instal·lació d'Ansible
+## Instalación de Ansible
 
-### 1. Instal·lar Ansible al controlador
+### 1. Instalar Ansible en el controlador
 
 ```bash
-# Actualitzar repositoris
+# Actualizar repositorios
 sudo apt update
 
-# Instal·lar Ansible
+# Instalar Ansible
 sudo apt install ansible -y
+```
 
-
-
-
-### 2. Preparar la clau privada SSH
+### 2. Preparar la clave privada SSH
 
 ```bash
-# Copiar la clau .pem a la màquina controladora (desde el teu ordenador)
+# Copiar la clave .pem a la máquina controladora (desde tu ordenador)
 scp -i labsuser.pem labsuser.pem ubuntu@10.0.1.201:/home/ubuntu/.ssh/
 
-# Conectar i establir permisos
+# Conectar y establecer permisos
 ssh -i labsuser.pem ubuntu@10.0.1.201
 
-# A la màquina controladora:
+# En la máquina controladora:
 chmod 400 /home/ubuntu/.ssh/labsuser.pem
 ```
 
 ---
 
-## Configuració d'Ansible
+## Configuración de Ansible
 
-### 1. Fitxer d'inventari (`/etc/ansible/hosts`)
+### 1. Archivo de inventario (`/etc/ansible/hosts`)
 
-El inventari defineix les màquines que Ansible gestiona i variables de connexió:
+El inventario define las máquinas que Ansible gestiona y las variables de conexión:
 
 ```bash
 sudo nano /etc/ansible/hosts
 ```
 
-Afegir el següent contingut:
+Añadir el siguiente contenido:
 
 ```ini
 [servidors]
@@ -71,19 +68,19 @@ web       ansible_host=10.0.1.237   ansible_user=ubuntu ansible_ssh_private_key_
 logs      ansible_host=10.0.1.201   ansible_user=ubuntu ansible_ssh_private_key_file=/home/ubuntu/.ssh/labsuser.pem
 ```
 
-**Explicació:**
-- `[servidors]` — grup de hosts
-- `ansible_host` — IP privada de la màquina
-- `ansible_user` — usuari SSH (ubuntu per defecte)
-- `ansible_ssh_private_key_file` — ruta a la clau privada
+**Explicación:**
+- `[servidors]` — grupo de hosts
+- `ansible_host` — IP privada de la máquina
+- `ansible_user` — usuario SSH (ubuntu por defecto)
+- `ansible_ssh_private_key_file` — ruta a la clave privada
 
-### 2. Fitxer de configuració (`/etc/ansible/ansible.cfg`)
+### 2. Archivo de configuración (`/etc/ansible/ansible.cfg`)
 
 ```bash
 sudo nano /etc/ansible/ansible.cfg
 ```
 
-Afegir:
+Añadir:
 
 ```ini
 [defaults]
@@ -94,19 +91,19 @@ allow_world_readable_tmpfiles = True
 become_method = sudo
 ```
 
-**Explicació:**
-- `host_key_checking = False` — no demanar confirmació de fingerprint SSH
-- `allow_world_readable_tmpfiles = True` — permetreix usar `become_user` sense errors de permisos
-- `become_method = sudo` — usar `sudo` per escalada de privilegis
+**Explicación:**
+- `host_key_checking = False` — no pedir confirmación de fingerprint SSH
+- `allow_world_readable_tmpfiles = True` — permite usar `become_user` sin errores de permisos
+- `become_method = sudo` — usar `sudo` para escalada de privilegios
 
-### 3. Verificar conectivitat
+### 3. Verificar conectividad
 
 ```bash
-# Provar connexió a totes les màquines
+# Probar conexión a todas las máquinas
 ansible servidors -m ping
 ```
 
-**Resultat espertat:**
+**Resultado esperado:**
 ```
 audio | SUCCESS => {
     "ansible_facts": {
@@ -124,33 +121,33 @@ bd | SUCCESS => { ... }
 
 ## Playbooks
 
-Els playbooks són fitxers YAML que defineixen les tasques a executar en les màquines remotes.
+Los playbooks son archivos YAML que definen las tareas a ejecutar en las máquinas remotas.
 
-### 1. `playbook_admin.yml` — Crear usuari administrador
+### 1. `playbook_admin.yml` — Crear usuario administrador
 
-Crea l'usuari `adminitb` amb permisos `sudo` i clave SSH a totes les màquines.
+Crea el usuario `adminitb` con permisos `sudo` y clave SSH en todas las máquinas.
 
 ```yaml
 ---
-- name: Crear usuari admin específic
+- name: Crear usuario admin específico
   hosts: servidors
   become: yes
 
   tasks:
-    - name: Crear usuari adminitb
+    - name: Crear usuario adminitb
       user:
         name: adminitb
         shell: /bin/bash
         create_home: yes
         state: present
 
-    - name: Afegir adminitb al grup sudo
+    - name: Añadir adminitb al grupo sudo
       user:
         name: adminitb
         groups: sudo
         append: yes
 
-    - name: Crear directori .ssh
+    - name: Crear directorio .ssh
       file:
         path: /home/adminitb/.ssh
         state: directory
@@ -158,39 +155,39 @@ Crea l'usuari `adminitb` amb permisos `sudo` i clave SSH a totes les màquines.
         group: adminitb
         mode: '0700'
 
-    - name: Copiar clau pública SSH
+    - name: Copiar clave pública SSH
       authorized_key:
         user: adminitb
         state: present
         key: "{{ lookup('file', '/home/ubuntu/.ssh/authorized_keys') }}"
 ```
 
-**Tasques que fa:**
-1. Crea l'usuari `adminitb` amb shell `/bin/bash` i home directory
-2. L'afegeix al grup `sudo` (permisos d'administrador)
-3. Crea el directori `.ssh` amb permisos `700` (només l'usuari pot accedir)
-4. Copia la clau SSH pública del controlador al usuari remot (accés sense contrasenya)
+**Tareas que realiza:**
+1. Crea el usuario `adminitb` con shell `/bin/bash` y directorio home
+2. Lo añade al grupo `sudo` (permisos de administrador)
+3. Crea el directorio `.ssh` con permisos `700` (solo el usuario puede acceder)
+4. Copia la clave SSH pública del controlador al usuario remoto (acceso sin contraseña)
 
 ---
 
-### 2. `playbook_rsyslog.yml` — Configurar logs centralitzats
+### 2. `playbook_rsyslog.yml` — Configurar logs centralizados
 
-Instal·la rsyslog (si no està) i configura tots els clientes per enviar logs al servidor central.
+Instala rsyslog (si no está) y configura todos los clientes para enviar logs al servidor central.
 
 ```yaml
 ---
-- name: Configurar rsyslog agent a tots els servidors
+- name: Configurar rsyslog agent en todos los servidores
   hosts: servidors
   become: yes
 
   tasks:
-    - name: Instal·lar rsyslog
+    - name: Instalar rsyslog
       apt:
         name: rsyslog
         state: present
         update_cache: yes
 
-    - name: Afegir configuració per enviar logs al servidor central
+    - name: Añadir configuración para enviar logs al servidor central
       lineinfile:
         path: /etc/rsyslog.conf
         line: "*.* @10.0.1.201:514"
@@ -203,29 +200,29 @@ Instal·la rsyslog (si no està) i configura tots els clientes per enviar logs a
         enabled: yes
 ```
 
-**Tasques que fa:**
-1. Instal·la el paquet `rsyslog` (actualitzant cache de `apt` si és necessari)
-2. Afegeix la línia `*.* @10.0.1.201:514` al fitxer `/etc/rsyslog.conf` (envia tots els logs al servidor `10.0.1.201` per UDP port 514)
-3. Reinicia el servei rsyslog i l'habilita per a futur boot
+**Tareas que realiza:**
+1. Instala el paquete `rsyslog` (actualizando caché de `apt` si es necesario)
+2. Añade la línea `*.* @10.0.1.201:514` al archivo `/etc/rsyslog.conf` (envía todos los logs al servidor `10.0.1.201` por UDP puerto 514)
+3. Reinicia el servicio rsyslog y lo habilita para futuros arranques
 
 ---
 
-### 3. `playbook_audio.yml` — Configurar servidor de streaming d'audio
+### 3. `playbook_audio.yml` — Configurar servidor de streaming de audio
 
-Instal·la i configura **Icecast2 + FFmpeg** per a streaming de música.
+Instala y configura **Icecast2 + FFmpeg** para streaming de música.
 
 ```yaml
 ---
-- name: Configurar servidor d'audio Icecast2
+- name: Configurar servidor de audio Icecast2
   hosts: audio
   become: yes
 
   tasks:
-    - name: Actualitzar repositoris
+    - name: Actualizar repositorios
       apt:
         update_cache: yes
 
-    - name: Instal·lar Icecast2 i FFmpeg
+    - name: Instalar Icecast2 y FFmpeg
       apt:
         name:
           - icecast2
@@ -276,26 +273,26 @@ Instal·la i configura **Icecast2 + FFmpeg** per a streaming de música.
             </security>
           </icecast>
 
-    - name: Habilitar i arrancar Icecast2
+    - name: Habilitar y arrancar Icecast2
       service:
         name: icecast2
         state: started
         enabled: yes
 
-    - name: Verificar que Icecast2 està actiu
+    - name: Verificar que Icecast2 está activo
       service:
         name: icecast2
         state: started
 ```
 
-**Tasques que fa:**
-1. Instal·la `icecast2`, `ffmpeg` i `screen`
-2. Crea el fitxer de configuració `/etc/icecast2/icecast.xml` amb els paràmetres:
-   - Contrasenya: `pirineus`
-   - Port: `8000`
-   - IP pública: `32.194.168.28` (actualitzar segons la teva IP real)
-   - Límits: màxim 100 clients, 10 fonts
-3. Inicia el servei Icecast2 i l'habilita al boot
+**Tareas que realiza:**
+1. Instala `icecast2`, `ffmpeg` y `screen`
+2. Crea el archivo de configuración `/etc/icecast2/icecast.xml` con los parámetros:
+   - Contraseña: `pirineus`
+   - Puerto: `8000`
+   - IP pública: `32.194.168.28` (actualizar según la IP real)
+   - Límites: máximo 100 clientes, 10 fuentes
+3. Inicia el servicio Icecast2 y lo habilita al arranque
 
 ---
 
@@ -303,16 +300,16 @@ Instal·la i configura **Icecast2 + FFmpeg** per a streaming de música.
 
 ```yaml
 ---
-- name: Configurar servidor de video NGINX RTMP + Jellyfin
+- name: Configurar servidor de vídeo NGINX RTMP + Jellyfin
   hosts: video
   become: yes
 
   tasks:
-    - name: Actualitzar repositoris
+    - name: Actualizar repositorios
       apt:
         update_cache: yes
 
-    - name: Instal·lar NGINX RTMP i FFmpeg
+    - name: Instalar NGINX RTMP y FFmpeg
       apt:
         name:
           - nginx
@@ -368,81 +365,81 @@ Instal·la i configura **Icecast2 + FFmpeg** per a streaming de música.
               }
           }
 
-    - name: Crear directori HLS
+    - name: Crear directorio HLS
       file:
         path: /tmp/hls
         state: directory
         mode: '0755'
 
-    - name: Crear directori web
+    - name: Crear directorio web
       file:
         path: /var/www/html
         state: directory
 
-    - name: Habilitar i arrancar NGINX
+    - name: Habilitar y arrancar NGINX
       service:
         name: nginx
         state: restarted
         enabled: yes
 
-    - name: Instal·lar Jellyfin
+    - name: Instalar Jellyfin
       shell: curl -fsSL https://repo.jellyfin.org/install-debuntu.sh | bash
       args:
         creates: /usr/bin/jellyfin
 
-    - name: Habilitar i arrancar Jellyfin
+    - name: Habilitar y arrancar Jellyfin
       service:
         name: jellyfin
         state: started
         enabled: yes
 ```
 
-**Tasques que fa:**
-1. Instal·la NGINX amb mòdul RTMP, FFmpeg i Screen
-2. Configura NGINX per:
-   - Escoltar RTMP al port 1935 (ingesta de streams)
-   - Generar HLS al port 8080 (reproducció en navegador)
-3. Crea directoris `/tmp/hls` (fragments HLS) i `/var/www/html` (reproductor web)
-4. Instal·la Jellyfin via script oficial
-5. Inicia ambdós serveis (NGINX i Jellyfin)
+**Tareas que realiza:**
+1. Instala NGINX con módulo RTMP, FFmpeg y Screen
+2. Configura NGINX para:
+   - Escuchar RTMP en el puerto 1935 (ingesta de streams)
+   - Generar HLS en el puerto 8080 (reproducción en navegador)
+3. Crea directorios `/tmp/hls` (fragmentos HLS) y `/var/www/html` (reproductor web)
+4. Instala Jellyfin mediante el script oficial
+5. Inicia ambos servicios (NGINX y Jellyfin)
 
 ---
 
-### 5. `playbook_bd.yml` — Instal·lar MariaDB
+### 5. `playbook_bd.yml` — Instalar MariaDB
 
 ```yaml
 ---
-- name: Configurar servidor de base de dades MariaDB
+- name: Configurar servidor de base de datos MariaDB
   hosts: bd
   become: yes
 
   tasks:
-    - name: Actualitzar repositoris
+    - name: Actualizar repositorios
       apt:
         update_cache: yes
 
-    - name: Instal·lar MariaDB
+    - name: Instalar MariaDB
       apt:
         name:
           - mariadb-server
           - python3-pymysql
         state: present
 
-    - name: Habilitar i arrancar MariaDB
+    - name: Habilitar y arrancar MariaDB
       service:
         name: mariadb
         state: started
         enabled: yes
 
-    - name: Verificar que MariaDB està actiu
+    - name: Verificar que MariaDB está activo
       service:
         name: mariadb
         state: started
 ```
 
-**Tasques que fa:**
-1. Instal·la `mariadb-server` (SGBD) i `python3-pymysql` (connector Python per Ansible)
-2. Inicia el servei MariaDB i l'habilita al boot
+**Tareas que realiza:**
+1. Instala `mariadb-server` (SGBD) y `python3-pymysql` (conector Python para Ansible)
+2. Inicia el servicio MariaDB y lo habilita al arranque
 
 ---
 
@@ -450,18 +447,18 @@ Instal·la i configura **Icecast2 + FFmpeg** per a streaming de música.
 
 ```yaml
 ---
-- name: Configurar servidor de logs centralitzats
+- name: Configurar servidor de logs centralizados
   hosts: logs
   become: yes
 
   tasks:
-    - name: Instal·lar rsyslog
+    - name: Instalar rsyslog
       apt:
         name: rsyslog
         state: present
         update_cache: yes
 
-    - name: Crear directori de logs remots
+    - name: Crear directorio de logs remotos
       file:
         path: /var/log/remote
         state: directory
@@ -469,7 +466,7 @@ Instal·la i configura **Icecast2 + FFmpeg** per a streaming de música.
         group: syslog
         mode: '0755'
 
-    - name: Configurar rsyslog com a servidor central
+    - name: Configurar rsyslog como servidor central
       blockinfile:
         path: /etc/rsyslog.conf
         block: |
@@ -487,16 +484,16 @@ Instal·la i configura **Icecast2 + FFmpeg** per a streaming de música.
         enabled: yes
 ```
 
-**Tasques que fa:**
-1. Instal·la rsyslog (si no està)
-2. Crea el directori `/var/log/remote` amb propietari `syslog` i permisos `755`
-3. Configura rsyslog per escoltar UDP i TCP al port 514
-4. Defineix una plantilla que organitza logs per hostname i programa: `/var/log/remote/<HOSTNAME>/<PROGRAMA>.log`
-5. Reinicia rsyslog per aplicar els canvis
+**Tareas que realiza:**
+1. Instala rsyslog (si no está)
+2. Crea el directorio `/var/log/remote` con propietario `syslog` y permisos `755`
+3. Configura rsyslog para escuchar UDP y TCP en el puerto 514
+4. Define una plantilla que organiza los logs por hostname y programa: `/var/log/remote/<HOSTNAME>/<PROGRAMA>.log`
+5. Reinicia rsyslog para aplicar los cambios
 
 ---
 
-### 7. `playbook_jitsi.yml` — Instal·lar Jitsi Meet
+### 7. `playbook_jitsi.yml` — Instalar Jitsi Meet
 
 ```yaml
 ---
@@ -505,39 +502,39 @@ Instal·la i configura **Icecast2 + FFmpeg** per a streaming de música.
   become: yes
 
   tasks:
-    - name: Actualitzar repositoris
+    - name: Actualizar repositorios
       apt:
         update_cache: yes
 
-    - name: Instal·lar Docker i Docker Compose
+    - name: Instalar Docker y Docker Compose
       apt:
         name:
           - docker.io
           - docker-compose
         state: present
 
-    - name: Habilitar i arrancar Docker
+    - name: Habilitar y arrancar Docker
       service:
         name: docker
         state: started
         enabled: yes
 
-    - name: Clonar repositori Jitsi Meet
+    - name: Clonar repositorio Jitsi Meet
       git:
         repo: https://github.com/jitsi/docker-jitsi-meet.git
         dest: /home/ubuntu/docker-jitsi-meet
         force: no
 
-    - name: Verificar que Docker està actiu
+    - name: Verificar que Docker está activo
       service:
         name: docker
         state: started
 ```
 
-**Tasques que fa:**
-1. Instal·la Docker i Docker Compose
-2. Inicia el servei Docker
-3. Clona el repositori oficial de Jitsi Meet (branca `master`)
+**Tareas que realiza:**
+1. Instala Docker y Docker Compose
+2. Inicia el servicio Docker
+3. Clona el repositorio oficial de Jitsi Meet (rama `master`)
 
 ---
 
@@ -545,16 +542,16 @@ Instal·la i configura **Icecast2 + FFmpeg** per a streaming de música.
 
 ```yaml
 ---
-- name: Configurar servidor LDAP i SFTP
+- name: Configurar servidor LDAP y SFTP
   hosts: ldap
   become: yes
 
   tasks:
-    - name: Actualitzar repositoris
+    - name: Actualizar repositorios
       apt:
         update_cache: yes
 
-    - name: Instal·lar OpenLDAP i utilitats
+    - name: Instalar OpenLDAP y utilidades
       apt:
         name:
           - slapd
@@ -562,19 +559,19 @@ Instal·la i configura **Icecast2 + FFmpeg** per a streaming de música.
           - openssh-server
         state: present
 
-    - name: Habilitar i arrancar slapd
+    - name: Habilitar y arrancar slapd
       service:
         name: slapd
         state: started
         enabled: yes
 
-    - name: Habilitar i arrancar SSH per SFTP
+    - name: Habilitar y arrancar SSH para SFTP
       service:
         name: ssh
         state: started
         enabled: yes
 
-    - name: Crear grup sftp
+    - name: Crear grupo sftp
       group:
         name: sftpusers
         state: present
@@ -594,12 +591,12 @@ Instal·la i configura **Icecast2 + FFmpeg** per a streaming de música.
         state: restarted
 ```
 
-**Tasques que fa:**
-1. Instal·la slapd (servidor LDAP), utilitats LDAP i SSH
-2. Inicia els serveis slapd i SSH
-3. Crea el grup `sftpusers` per a usuaris SFTP
-4. Configura SSH per encarcerar usuaris SFTP en els seus directoris (`/home/%u`)
-5. Deshabilita forwarding de portes per a usuaris SFTP (seguretat)
+**Tareas que realiza:**
+1. Instala slapd (servidor LDAP), utilidades LDAP y SSH
+2. Inicia los servicios slapd y SSH
+3. Crea el grupo `sftpusers` para usuarios SFTP
+4. Configura SSH para encerrar usuarios SFTP en sus directorios (`/home/%u`)
+5. Deshabilita el reenvío de puertos para usuarios SFTP (seguridad)
 
 ---
 
@@ -612,44 +609,44 @@ Instal·la i configura **Icecast2 + FFmpeg** per a streaming de música.
   become: yes
 
   tasks:
-    - name: Actualitzar repositoris
+    - name: Actualizar repositorios
       apt:
         update_cache: yes
 
-    - name: Instal·lar Apache i SSH
+    - name: Instalar Apache y SSH
       apt:
         name:
           - apache2
           - openssh-server
         state: present
 
-    - name: Habilitar i arrancar Apache
+    - name: Habilitar y arrancar Apache
       service:
         name: apache2
         state: started
         enabled: yes
 
-    - name: Habilitar i arrancar SSH
+    - name: Habilitar y arrancar SSH
       service:
         name: ssh
         state: started
         enabled: yes
 
-    - name: Verificar que Apache està actiu
+    - name: Verificar que Apache está activo
       service:
         name: apache2
         state: started
 ```
 
-**Tasques que fa:**
-1. Instal·la Apache2 i OpenSSH
-2. Inicia ambdós serveis i els habilita al boot
+**Tareas que realiza:**
+1. Instala Apache2 y OpenSSH
+2. Inicia ambos servicios y los habilita al arranque
 
 ---
 
 ## Playbook unificado: `site.yml`
 
-Per executar tots els playbooks de manera seqüencial amb un sol comando:
+Para ejecutar todos los playbooks de manera secuencial con un solo comando:
 
 ```yaml
 ---
@@ -666,65 +663,65 @@ Per executar tots els playbooks de manera seqüencial amb un sol comando:
 
 ---
 
-## Execució dels Playbooks
+## Ejecución de los Playbooks
 
-### Executar un playbook individual
+### Ejecutar un playbook individual
 
 ```bash
-# Crear usuari admin a totes les màquines
+# Crear usuario admin en todas las máquinas
 ansible-playbook /home/ubuntu/playbook_admin.yml
 
-# Configurar logs a tots els servidors
+# Configurar logs en todos los servidores
 ansible-playbook /home/ubuntu/playbook_rsyslog.yml
 
-# Instal·lar audio només a la màquina 'audio'
+# Instalar audio solo en la máquina 'audio'
 ansible-playbook /home/ubuntu/playbook_audio.yml
 ```
 
-### Executar tots els playbooks de una vegada
+### Ejecutar todos los playbooks a la vez
 
 ```bash
-# Desplegar tota la infraestructura
+# Desplegar toda la infraestructura
 ansible-playbook /home/ubuntu/site.yml
 ```
 
-### Executar amb verbositat (veure els detalles)
+### Ejecutar con verbosidad (ver los detalles)
 
 ```bash
-# Mode verbose (mostra variables, resultats...)
+# Modo verbose (muestra variables, resultados...)
 ansible-playbook /home/ubuntu/site.yml -v
 
-# Mode extra verbose (mostra tasques internes)
+# Modo extra verbose (muestra tareas internas)
 ansible-playbook /home/ubuntu/site.yml -vv
 
-# Mode debug (tots els detalls)
+# Modo debug (todos los detalles)
 ansible-playbook /home/ubuntu/site.yml -vvv
 ```
 
-### Execució parcial
+### Ejecución parcial
 
 ```bash
-# Executar només tasques que comencin amb "Instal"
+# Ejecutar solo tareas que empiecen por "Instal"
 ansible-playbook /home/ubuntu/site.yml --tags "install"
 
-# Saltar tasques específiques
+# Saltar tareas específicas
 ansible-playbook /home/ubuntu/site.yml --skip-tags "restart"
 
-# Executar sobre un host específic
+# Ejecutar sobre un host específico
 ansible-playbook /home/ubuntu/playbook_audio.yml -i localhost,
 ```
 
 ---
 
-## Validació
+## Validación
 
-### 1. Verificar usuari adminitb en totes les màquines
+### 1. Verificar usuario adminitb en todas las máquinas
 
 ```bash
 ansible servidors -m command -a "id adminitb"
 ```
 
-**Resultat espertat:**
+**Resultado esperado:**
 ```
 audio | CHANGED | rc=0 >>
 uid=1001(adminitb) gid=1001(adminitb) groups=1001(adminitb),27(sudo)
@@ -734,42 +731,42 @@ uid=1001(adminitb) gid=1001(adminitb) groups=1001(adminitb),27(sudo)
 ...
 ```
 
-### 2. Verificar logs centralitzats
+### 2. Verificar logs centralizados
 
 ```bash
-# Al servidor de logs
+# En el servidor de logs
 ls /var/log/remote/
 
-# Resultat: carpetes amb noms de les altres màquines
+# Resultado: carpetas con nombres de las otras máquinas
 ip-10-0-1-60 ip-10-0-1-23 ip-10-0-1-208 ...
 
-# Verificar contingut de logs
+# Verificar contenido de logs
 cat /var/log/remote/ip-10-0-1-208/sshd.log
 ```
 
-### 3. Verificar serveis actius
+### 3. Verificar servicios activos
 
 ```bash
-# En la màquina 'audio'
+# En la máquina 'audio'
 ansible audio -m service -a "name=icecast2 state=started"
 
-# En la màquina 'video'
+# En la máquina 'video'
 ansible video -m service -a "name=nginx state=started"
 
-# En la màquina 'bd'
+# En la máquina 'bd'
 ansible bd -m service -a "name=mariadb state=started"
 ```
 
-### 4. Test de connectivitat dins de les màquines
+### 4. Test de conectividad entre máquinas
 
 ```bash
-# Des del controlador, verificar que la màquina 'bd' pot arribar a 'logs'
+# Desde el controlador, verificar que la máquina 'bd' puede llegar a 'logs'
 ansible bd -m command -a "ping -c 1 10.0.1.201"
 ```
 
 ---
 
-## Estructura de fitxers
+## Estructura de archivos
 
 ```
 /home/ubuntu/
@@ -787,58 +784,57 @@ ansible bd -m command -a "ping -c 1 10.0.1.201"
     └── labsuser.pem
 
 /etc/ansible/
-├── hosts              # Inventari
-├── ansible.cfg        # Configuració global
-└── roles/             # (opcional) Rols reutilitzables
+├── hosts              # Inventario
+├── ansible.cfg        # Configuración global
+└── roles/             # (opcional) Roles reutilizables
 ```
 
 ---
 
-## Resolució de problemes
+## Resolución de problemas
 
-| Error | Causa | Solució |
-|-------|-------|---------|
-| **"Permission denied (publickey)"** | Clau SSH no accessible | Verificar que `/home/ubuntu/.ssh/labsuser.pem` existeix i té permisos `400` |
-| **"Connection refused"** | Port SSH bloquejat | Verificar Security Group: obrir port 22 TCP |
-| **"UNREACHABLE"** | Màquina no respón | Verificar que la màquina està en execució en AWS |
-| **"changed failed"** | Tasca Ansible falló | Veure l'output complet amb `-vv` per diagnosticar |
-| **"missing required module"** | Mòdul Python mancat | Instal·lar via `apt` (ex: `python3-pymysql`) |
-| **"lineinfile: file not found"** | Fitxer no existeix | Assegurar que el fitxer existeix o usar `create: yes` |
-
----
-
-## Referència ràpida de comandos
-
-| Comanda | Funció |
-|---------|--------|
-| `ansible servidors -m ping` | Provar connexió a totes les màquines |
-| `ansible servidors -m command -a "uptime"` | Executar comanda remota |
-| `ansible-playbook playbook.yml` | Executar playbook |
-| `ansible-playbook playbook.yml -v` | Verbose mode |
-| `ansible-playbook playbook.yml --list-tasks` | Llistar les tasques sense executar |
-| `ansible-playbook playbook.yml --list-hosts` | Llistar les màquines afectades |
-| `ansible servidors -b -m apt -a "name=vim state=present"` | Instal·lar paquet remot amb sudo |
-| `ansible servidors -m gather_facts` | Recopilar informació del sistema |
+| Error | Causa | Solución |
+|-------|-------|----------|
+| **"Permission denied (publickey)"** | Clave SSH no accesible | Verificar que `/home/ubuntu/.ssh/labsuser.pem` existe y tiene permisos `400` |
+| **"Connection refused"** | Puerto SSH bloqueado | Verificar Security Group: abrir puerto 22 TCP |
+| **"UNREACHABLE"** | Máquina no responde | Verificar que la máquina está en ejecución en AWS |
+| **"changed failed"** | Tarea Ansible falló | Ver el output completo con `-vv` para diagnosticar |
+| **"missing required module"** | Módulo Python ausente | Instalar vía `apt` (ej: `python3-pymysql`) |
+| **"lineinfile: file not found"** | Archivo no existe | Asegurarse de que el archivo existe o usar `create: yes` |
 
 ---
 
-## Avantatges d'Ansible en aquest projecte
+## Referencia rápida de comandos
 
-✅ **Repetibilitat:** Els mateixos playbooks es poden executar múltiples vegades sense efectes secundaris.
-
-✅ **Escalabilitat:** Afegir nova màquina? Actualitzar inventari i executar `site.yml`.
-
-✅ **Documentació viva:** Els playbooks són la documentació de la infraestructura.
-
-✅ **Seguretat:** Sense agents instal·lats, només necessita clau SSH.
-
-✅ **Rapidesa:** Configurar 7 servidors en minuts en comptes de hores manuals.
-
-✅ **Versionable:** Els playbooks es guarden en Git per a control de versions.
+| Comando | Función |
+|---------|---------|
+| `ansible servidors -m ping` | Probar conexión a todas las máquinas |
+| `ansible servidors -m command -a "uptime"` | Ejecutar comando remoto |
+| `ansible-playbook playbook.yml` | Ejecutar playbook |
+| `ansible-playbook playbook.yml -v` | Modo verbose |
+| `ansible-playbook playbook.yml --list-tasks` | Listar las tareas sin ejecutar |
+| `ansible-playbook playbook.yml --list-hosts` | Listar las máquinas afectadas |
+| `ansible servidors -b -m apt -a "name=vim state=present"` | Instalar paquete remoto con sudo |
+| `ansible servidors -m gather_facts` | Recopilar información del sistema |
 
 ---
 
-## Conclusió
+## Ventajas de Ansible en este proyecto
 
-Ansible proporciona automatització sense agents que permet desplegar i mantenir la infraestructura de **Innovate Tech** de manera ràpida, repetible i segura. Els playbooks defineixen la configuració desitjada, garantint consistència entre totes les màquines.
+✅ **Repetibilidad:** Los mismos playbooks se pueden ejecutar múltiples veces sin efectos secundarios.
 
+✅ **Escalabilidad:** ¿Añadir nueva máquina? Actualizar inventario y ejecutar `site.yml`.
+
+✅ **Documentación viva:** Los playbooks son la documentación de la infraestructura.
+
+✅ **Seguridad:** Sin agentes instalados, solo necesita clave SSH.
+
+✅ **Rapidez:** Configurar 7 servidores en minutos en vez de horas manuales.
+
+✅ **Versionable:** Los playbooks se guardan en Git para control de versiones.
+
+---
+
+## Conclusión
+
+Ansible proporciona automatización sin agentes que permite desplegar y mantener la infraestructura de **Innovate Tech** de manera rápida, repetible y segura. Los playbooks definen la configuración deseada, garantizando consistencia entre todas las máquinas.
