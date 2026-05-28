@@ -16,17 +16,6 @@ En aquest projecte, Ansible automatitza la configuració de **7 instàncies EC2*
 - **Ubicació dels fitxers:** `/home/ubuntu/`
 - **Clau privada SSH:** `/home/ubuntu/.ssh/labsuser.pem`
 
-### Nodes gestionats (7 instàncies)
-
-| Nom | IP privada  Servei principal |
-|-----|-----------|-----------|------------------|
-| audio | 10.0.1.60  Icecast2 (streaming de audio) |
-| video | 10.0.1.23  NGINX RTMP + Jellyfin (vídeo) |
-| bd | 10.0.1.208  MariaDB (base de dades) |
-| jitsi | 10.0.1.17  Jitsi Meet (videoconferència) |
-| ldap | 10.0.1.209  OpenLDAP + SFTP |
-| web | 10.0.1.237  NGINX (servidor web) |
-| logs | 10.0.1.201 rsyslog (logs centralitzats) |
 
 ---
 
@@ -41,17 +30,8 @@ sudo apt update
 # Instal·lar Ansible
 sudo apt install ansible -y
 
-# Verificar versió
-ansible --version
-```
 
-**Resultat espertat:**
-```
-ansible [core 2.16.x]
-  config file = /etc/ansible/ansible.cfg
-  configured module search path = ['/home/ubuntu/.ansible/plugins/modules']
-  ...
-```
+
 
 ### 2. Preparar la clau privada SSH
 
