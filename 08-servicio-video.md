@@ -1,4 +1,4 @@
-# 🎬 Servidor de Streaming de Vídeo — NGINX + RTMP + HLS
+# Servidor de Streaming de Vídeo — NGINX + RTMP + HLS
 
 Esta sección cubre el despliegue de una arquitectura de distribución de vídeo de alta definición basada en el servidor **NGINX**. El sistema actúa como un nodo de ingesta mediante el protocolo **RTMP** (puerto `1935`) y realiza una transcodificación/segmentación en caliente al protocolo **HLS** (HTTP Live Streaming), almacenando los fragmentos `.ts` y la lista de reproducción `.m3u8` dinámicamente para ser servidos por HTTP a través del puerto `8080`.
 
@@ -179,93 +179,265 @@ El stream de vídeo ya está siendo procesado y fragmentado continuamente por NG
 
 ---
 
-## Paso 7: Despliegue del Reproductor Web HTML5 y `hls.js`
+# Servidor de Vídeo en Streaming — Jellyfin
 
-Para que cualquier usuario pueda consumir la transmisión en vivo, creamos una interfaz web moderna. El archivo se programa en `/tmp/player.html` y luego se mueve a la raíz del servidor `/var/www/html/`.
+## Descripció general
 
-**1. Asegurar la ruta del servidor web:**
+**Jellyfin** és un servidor de mediateca gratuït i de codi obert que permet gestionar, organitzar i visualitzar pel·lícules, sèries, música i fotos en qualsevol dispositiu amb navegador web o aplicació mòbil.
 
-```bash
-ubuntu@ip-10-0-1-60:~$ sudo mkdir -p /var/www/html
-```
+En aquest projecte, Jellyfin actua com a **catàleg de vídeos a demanda (VOD)** complementari al sistema de streaming en directe (RTMP/HLS). 
 
-**2. Escribir el código de la interfaz web:**
+---
 
-```bash
-ubuntu@ip-10-0-1-60:~$ nano /tmp/player.html
-```
 
-Código fuente de `player.html` incorporando el motor JavaScript de descompresión HLS:
+### 2. Descarregar i executar el script oficial
 
-```html
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <title>InnovateTech - Reproductor de Vídeo HLS en Vivo</title>
-    <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
-    <style>
-        body { font-family: Arial, sans-serif; background: #1e1e24; color: #fff; text-align: center; padding: 40px; }
-        video { background: #000; border: 3px solid #3a3a45; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.5); width: 100%; max-width: 800px; }
-        .status-container { margin-top: 15px; font-size: 14px; color: #a0a0b0; }
-    </style>
-</head>
-<body>
-    <h1>🎬 Servidor de Vídeo en Streaming en Vivo (AWS EC2)</h1>
-    <p>Proyecto ASIX - Transmisión en tiempo real utilizando NGINX + RTMP + HLS</p>
-
-    <video id="video" controls autoplay muted></video>
-
-    <div class="status-container">
-        <p>Dirección del Punto de Montaje: <code style="color: #4af;">http://32.194.168.28:8080/hls/stream.m3u8</code></p>
-    </div>
-
-    <script>
-        var video = document.getElementById('video');
-        // Ruta absoluta apuntando a la IP pública de la instancia AWS EC2 en el puerto 8080
-        var videoSrc = 'http://32.194.168.28:8080/hls/stream.m3u8';
-
-        if (Hls.isSupported()) {
-            var hls = new Hls();
-            hls.loadSource(videoSrc);
-            hls.attachMedia(video);
-            hls.on(Hls.Events.MANIFEST_PARSED, function() {
-                video.play();
-            });
-        }
-        else if (video.canPlayType('application/vnd.apple.mpegurl')) {
-            // Soporte nativo para navegadores Safari / iOS
-            video.src = videoSrc;
-            video.addEventListener('loadedmetadata', function() {
-                video.play();
-            });
-        }
-    </script>
-</body>
-</html>
-```
-
-**3. Mover el reproductor a la ubicación definitiva servida por NGINX:**
+Jellyfin ofereix un script d'instal·lació oficial que simplifica el procés:
 
 ```bash
-ubuntu@ip-10-0-1-60:~$ sudo mv /tmp/player.html /var/www/html/player.html
-ubuntu@ip-10-0-1-60:~$ sudo chown www-data:www-data /var/www/html/player.html
+# Descarregar l'script
+curl https://repo.jellyfin.org/install-debuntu.sh -o install-jellyfin.sh
+
+# Fer-lo executable
+chmod +x install-jellyfin.sh
+
+# Executar l'instal·lador 
+sudo ./install-jellyfin.sh
+```
+
+El script:
+- Afegeix el repositori oficial de Jellyfin
+- Instal·la les dependències necessàries
+- Instal·la el paquet `jellyfin`
+- Crea l'usuari del sistema `jellyfin`
+- Configura el servei per iniciar automàticament
+
+### 3. Habilitar i arrancar el servei
+
+```bash
+# Assegurar que el servei està habilitat per iniciar-se al boot
+sudo systemctl enable jellyfin
+
+# Iniciar el servei
+sudo systemctl start jellyfin
+
+
+
+## Configuració
+
+### 1. Crear el directori de la biblioteca
+
+Jellyfin necessita un directori on emmagatzemar els vídeos. Per seguretat i organització, usarem `/opt/videos`:
+
+```bash
+# Crear el directori
+sudo mkdir -p /opt/videos
+
+# Canviar propietari a l'usuari jellyfin (qui executa el servei)
+sudo chown -R jellyfin:jellyfin /opt/videos
+
+# Establir permisos (755: propietari pot llegir/escriure/executar, altres només llegir)
+sudo chmod -R 755 /opt/videos
+```
+
+### 2. Afegir vídeos al directori
+
+Per aquest projecte, usem el vídeo de prova `willy.mp4`:
+
+```bash
+# Copiar el vídeo al directori (des d'on tinguis el fitxer)
+sudo cp ~/willy.mp4 /opt/videos/
+
+
+# Assegurar que els permisos són correctes
+sudo chown jellyfin:jellyfin /opt/videos/willy.mp4
+sudo chmod 644 /opt/videos/willy.mp4
+```
+
+
+### 3. Accedir a la interfície web
+
+Obrir el navegador i anar a:
+
+```
+http://<IP-pública-ec2-video>:8096
+```
+
+
+---
+
+## Configuració de la biblioteca dins de Jellyfin
+
+### 1. Configuració inicial (wizard)
+
+En la primera connexió, Jellyfin mostra un wizard de configuració:
+
+1. **Idioma:** Seleccionar Català o Anglès
+2. **Metadades:** Activar la descàrrega automàtica de cartells, sinopsis i informació
+3. **Usuari admin:** Crear l'usuari administrador (opcional contrasenya)
+
+### 2. Afegir la carpeta de biblioteca
+
+Una vegada configurat:
+
+1. Anar a **Settings** → **Libraries**
+2. Clicar **+ Add Library**
+3. Seleccionar tipo: **Movies** (pel·lícules)
+4. Clicar **Add Folder**
+5. Navegar a `/opt/videos` i seleccionar-la
+6. Clicar **OK**
+7. Clicar **Add** per crear la biblioteca
+
+### 3. Escaneig de la biblioteca
+
+Jellyfin automàticament:
+- Escanejarà els fitxers MP4 al directori
+- Baixarà metadades (títol, any, gènere, director) des de bases de dades externes
+- Descarregarà imatges (cartell, fons)
+- Crearà miniatures per a vista ràpida
+
+El procés pot trigar segons la quantitat de vídeos. Veure el progrés a **Settings** → **Scheduled Tasks** → **Scan Library**.
+
+---
+
+## Accés i reproducció
+
+### 1. Interfície web principal
+
+```
+http://<IP-pública>:8096/
+```
+
+Mostra:
+- **Home:** últims vídeos afegits, recomanacions
+- **Libraries:** accés a pel·lícules, sèries, música
+- **Explore:** cerca avançada per títol, gènere, any
+
+### 2. Cercar i reproduir un vídeo
+
+1. Clicar a **Libraries** → **Movies**
+2. Trobar "Willy" a la llista
+3. Clicar en el cartell per obrir la fitxa del vídeo
+4. Clicar **Play** per iniciar la reproducció
+
+---
+
+## Permisos i seguretat
+
+
+### Accés a la web
+
+Jellyfin **no requereix autenticació per defecte** en la biblioteca pública. Per afegir seguretat:
+
+1. Anar a **Settings** → **Users** → **Create User**
+2. Crear usuari `client` amb contrasenya
+3. Assignar permisos específics per biblioteca
+
+---
+
+## Manteniment
+
+### Comprovar l'estat del servei
+
+```bash
+# Ver si el servei està actiu
+sudo systemctl status jellyfin
+
+# Veure els últims logs
+sudo journalctl -u jellyfin -n 50
+
+# Veure logs en temps real
+sudo journalctl -u jellyfin -f
+```
+
+### Reiniciar Jellyfin
+
+```bash
+sudo systemctl restart jellyfin
+```
+
+### Afegir més vídeos
+
+```bash
+# Copiar vídeos al directori
+sudo cp ~/pelicula.mp4 /opt/videos/
+
+# Canviar permisos
+sudo chown jellyfin:jellyfin /opt/videos/pelicula.mp4
+sudo chmod 644 /opt/videos/pelicula.mp4
+
+# Desde la web: Settings → Libraries → Scan Library (o esperar que ho faci automàticament)
 ```
 
 ---
 
-## Paso 8: Comprobación Técnica Final del Servicio
 
-Cualquier cliente remoto puede conectarse a la interfaz multimedia cargando la IP pública de la instancia en su navegador web:
 
-| Recurso | URL |
-|---|---|
-| 🌐 Reproductor Web | `http://32.194.168.28:8080/player.html` |
-| 📡 Punto de Montaje HLS | `http://32.194.168.28:8080/hls/stream.m3u8` |
-| 📥 Ingesta RTMP | `rtmp://32.194.168.28:1935/live/stream` |
+## Proves i validació
 
-> [!WARNING]
-> Si la página del reproductor carga la estructura pero el cuadro de vídeo se queda en negro o emite un error de red en la consola del desarrollador, verifique que los **Security Groups** de su instancia AWS EC2 tengan explícitamente abiertos los puertos de entrada:
+### Test 1: Servei actiu
+
+```bash
+sudo systemctl status jellyfin
+# Expected: active (running)
+```
+
+### Test 2: Vídeo a la biblioteca
+
+1. Obrir `http://<IP>:8096`
+2. Anar a **Libraries** → **Movies**
+3. Confirmar que "Willy" apareix a la llista
+4. Clicar i veure les metadades (títol, any, durada, cartell)
+
+### Test 3: Reproducció en navegador
+
+1. Clicar **Play** en el vídeo "Willy"
+2. Verificar que s'inicia la reproducció sense errors
+3. Provar els controls: pausa, volum, pantalla completa
+4. Avançar en el timeline per comprovar la qualitat
+
+### Test 4: Accés remote (des d'una altra màquina)
+
+```bash
+# Desde qualsevol ordenador amb accés a internet
+curl http://<IP-pública>:8096/
+# Expected: HTML de la pàgina de Jellyfin
+```
+
+---
+
+## Resolució de problemes
+
+| Problema | Causa | Solució |
+|----------|-------|---------|
+| **Port 8096 no accessible** | Firewall bloquejat | Obrir port 8096 en Security Group AWS |
+| **"Library empty"** | Cap vídeo a `/opt/videos` | Copiar fitxers i escannejar biblioteca |
+| **Permisos denied** | Permisos incorrectes | `sudo chown -R jellyfin:jellyfin /opt/videos` |
+| **Reproducció lenta** | Bitrate alt o CPU insuficient | Reduir resolució o activar transcoding |
+| **No s'encarrega metadades** | Jellyfin sense accés a internet | Verificar connectivitat; descarregar XML de metadades manualment |
+
+---
+
+## Referència ràpida
+
+| Acció | Comanda |
+|-------|---------|
+| Instal·lar | `curl https://repo.jellyfin.org/install-debuntu.sh \| bash` |
+| Iniciar | `sudo systemctl start jellyfin` |
+| Parar | `sudo systemctl stop jellyfin` |
+| Veure logs | `sudo journalctl -u jellyfin -f` |
+| Accedir web | `http://<IP>:8096` |
+| Directori vídeos | `/opt/videos` |
+| Usuari servei | `jellyfin` |
+| Port | `8096` |
+
+---
+
+## Conclusió
+
+Jellyfin proporciona una solució gratuïta i completa per a la gestió de videoteca en streaming. Integrat amb NGINX RTMP + HLS per a transmissions en directe, ofereix a **Innovate Tech** una plataforma multifacètica per a distribució de continguts audiovisuals.
+
+
 >
 > | Puerto | Protocolo | Uso |
 > |---|---|---|
