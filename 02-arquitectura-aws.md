@@ -1,10 +1,10 @@
-# ☁️ 1. Infraestructura de Red y Arquitectura Cloud (AWS)
+#  1. Infraestructura de Red y Arquitectura Cloud (AWS)
 
 La arquitectura cloud de **InnovateTech** se basa en un entorno seguro, escalable y altamente disponible desplegado sobre **Amazon Web Services (AWS)**. A continuación, se detalla la configuración de la infraestructura utilizando las evidencias obtenidas desde el panel de administración de AWS.
 
 ---
 
-# 🖥️ 1.1 Gestión de Servidores: Instancias EC2
+#  1.1 Gestión de Servidores: Instancias EC2
 
 En este apartado se muestra el estado operativo y la configuración de red de los servidores virtuales desplegados en AWS.
 
@@ -37,7 +37,7 @@ Asimismo, cada instancia se encuentra asociada a una **Zona de Disponibilidad (A
 
 ---
 
-# 🛡️ 1.2 Seguridad Perimetral: Security Groups
+#  1.2 Seguridad Perimetral: Security Groups
 
 Para garantizar la protección de la infraestructura se han configurado diferentes **Security Groups**, que actúan como cortafuegos virtuales controlando el tráfico entrante y saliente de cada instancia.
 
@@ -61,7 +61,7 @@ Se han habilitado puertos específicos como:
 | 443    | TCP       | HTTPS                                   |
 | 3306   | TCP       | MariaDB                                 |
 | 5060   | UDP/TCP   | Servicios de comunicación               |
-| 10000+ | UDP       | Tráfico multimedia de videoconferencias |
+| 10000 | UDP       | Tráfico multimedia de videoconferencias |
 
 ### Medidas de Seguridad
 
@@ -75,7 +75,7 @@ Gracias a esta configuración, la base de datos y los servicios internos permane
 
 ---
 
-# 🌐 1.3 Conectividad y Acceso a Internet: Internet Gateway
+#  1.3 Conectividad y Acceso a Internet: Internet Gateway
 
 El acceso controlado a Internet se realiza mediante un **Internet Gateway (IGW)** asociado a la VPC principal.
 
@@ -103,7 +103,7 @@ Sin este componente, el servidor Proxy no podría recibir las peticiones procede
 
 ---
 
-# 🗺️ 1.4 Visualización de la Red: Mapa de Recursos VPC
+#  1.4 Visualización de la Red: Mapa de Recursos VPC
 
 Para disponer de una visión global de la infraestructura se utiliza el mapa de recursos proporcionado por AWS.
 
@@ -160,7 +160,7 @@ Gracias a estas reglas se puede definir qué servidores tienen acceso a Internet
 
 ---
 
-# ✅ 1.5 Resumen de Configuración
+#  1.5 Resumen de Configuración
 
 | Captura             | Apartado             | Propósito                                                     |
 | ------------------- | -------------------- | ------------------------------------------------------------- |
@@ -171,7 +171,7 @@ Gracias a estas reglas se puede definir qué servidores tienen acceso a Internet
 
 ---
 
-# 📊 Conclusiones
+#  Conclusiones
 
 La infraestructura cloud desplegada en AWS proporciona una plataforma robusta, segura y escalable para los servicios de InnovateTech.
 
