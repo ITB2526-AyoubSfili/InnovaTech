@@ -34,7 +34,7 @@ http://32.194.168.28:8000/admin/
 
 ### Evidencia
 
-<img width="928" alt="Panel Icecast2 Admin mostrando Global Server Stats: 2 clientes, Icecast 2.4.4, host 32.194.168.28" src="img/audio-icecast-panel.png" />
+<img width="1849" height="729" alt="audio-icecast-panel" src="https://github.com/user-attachments/assets/9ed8c921-8b3d-48b0-8190-9805fa25806a" />
 
 ---
 
@@ -50,7 +50,7 @@ http://32.194.168.28:8000/admin/listclients.xsl?mount=/stream
 
 ### Evidencia
 
-<img width="928" alt="Listener Stats mostrando 3 clientes conectados desde 79.117.174.171 con tiempos de 377s, 96s y 21s" src="img/audio-clientes.png" />
+<img width="1849" height="462" alt="audio-clientes" src="https://github.com/user-attachments/assets/d80ddb6f-5f8f-4b24-ac32-a86b50183ddd" />
 
 ---
 
