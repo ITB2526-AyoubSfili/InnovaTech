@@ -286,6 +286,36 @@ Por este motivo, se han implementado diferentes capas de protección orientadas 
 | **RAID**                        | Configuración **RAID 1** para los discos del sistema operativo, proporcionando tolerancia al fallo de un disco. Configuración **RAID 5** para los datos de logs y bases de datos. Cada servidor dispone de un disco hot-swap de repuesto para recuperación inmediata.                                      |
 | **Gestión de vulnerabilidades** | Las actualizaciones de seguridad se aplican automáticamente mediante **unattended-upgrades** en todas las instancias. Se realiza un análisis mensual de vulnerabilidades con **OpenVAS** y una revisión trimestral de permisos y roles LDAP.                                                               |
 
+# 5 Prevención de Riesgos Laborales (PRL)
+
+La sala del CPD presenta condiciones especiales de trabajo debido al ruido de los sistemas de refrigeración, la temperatura controlada y la presencia de equipos eléctricos de alta tensión. Por ello, se han definido las siguientes medidas de seguridad:
+
+* Iluminación de emergencia autónoma con batería de 3 horas, activación automática y un mínimo de 50 lux en pasillos.
+
+* Pasillos de al menos 90 cm entre racks para facilitar la evacuación y el mantenimiento.
+
+* Señalización normalizada ISO 7010 en zonas de riesgo eléctrico y alta tensión.
+
+* Formación anual obligatoria para el personal de TI sobre primeros auxilios, evacuación y manipulación segura de equipos eléctricos.
+
+* Prohibición de comer, beber o introducir líquidos dentro de la sala.
+
+* Equipos de protección individual (EPI) disponibles en la entrada:
+
+  * Guantes aislantes clase 0 (hasta 1.000 V).
+  * Gafas de protección.
+  * Calzado antiestático.
+
+* Protocolo de trabajo en caliente:
+
+  * Permiso escrito obligatorio.
+  * Presencia de un acompañante.
+  * Notificación previa al responsable de TI.
+
+* Tiempo máximo de permanencia continua de 30 minutos debido al ruido de los sistemas de ventilación.
+
+* Extintor manual de CO₂ disponible junto a la salida para incendios eléctricos de pequeña magnitud.
+
 
 ### Consumo estimado
 
