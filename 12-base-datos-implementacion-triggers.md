@@ -264,7 +264,7 @@ Resultado esperado:
 
 ---
 
-## ⚡ TRIGGERS
+##  TRIGGERS
 
 Un **trigger** es un bloque de código SQL que se ejecuta automáticamente cuando ocurre una acción específica sobre una tabla (INSERT, UPDATE o DELETE). Su función principal es:
 
