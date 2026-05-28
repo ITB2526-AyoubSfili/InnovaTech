@@ -18,9 +18,9 @@ ffmpeg -re -stream_loop -1 -i audio_prova.mp3 \
 
 ### Evidencia
 
-<img width="928" alt="Salida de FFmpeg mostrando transmisión activa a icecast://source:pirineus@localhost:8000/stream con bitrate 128 kbps" src="img/audio-ffmpeg.png" />
+<img width="771" height="576" alt="audio-ffmpeg" src="https://github.com/user-attachments/assets/c733032c-4af6-4633-88c3-56d5b19e52b4" />
 
----
+
 
 ## ✅ 2. Panel de administración de Icecast2
 
