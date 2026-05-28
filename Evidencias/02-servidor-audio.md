@@ -1,10 +1,10 @@
-# 🎵 Servidor de Streaming de Audio (Icecast2)
+#  Servidor de Streaming de Audio (Icecast2)
 
 El objetivo de estas pruebas es comprobar que el servidor Icecast2 funciona correctamente, que la transmisión de audio está activa y que los clientes pueden conectarse al stream.
 
 ---
 
-## ✅ 1. Transmisión de audio con FFmpeg
+##  1. Transmisión de audio con FFmpeg
 
 Se inició la transmisión en bucle infinito hacia el servidor Icecast2 a 128 kbps.
 
@@ -22,7 +22,7 @@ ffmpeg -re -stream_loop -1 -i audio_prova.mp3 \
 
 
 
-## ✅ 2. Panel de administración de Icecast2
+##  2. Panel de administración de Icecast2
 
 Se comprobó el acceso al panel web de administración desde un navegador externo.
 
@@ -38,7 +38,7 @@ http://32.194.168.28:8000/admin/
 
 ---
 
-## ✅ 3. Verificación de clientes conectados al stream
+##  3. Verificación de clientes conectados al stream
 
 Se comprobó que múltiples clientes pudieran conectarse al stream simultáneamente.
 
@@ -54,7 +54,7 @@ http://32.194.168.28:8000/admin/listclients.xsl?mount=/stream
 
 ---
 
-# 📊 Conclusión
+#  Conclusión
 
 Las pruebas realizadas permitieron verificar el correcto funcionamiento del servidor de streaming de audio.
 
