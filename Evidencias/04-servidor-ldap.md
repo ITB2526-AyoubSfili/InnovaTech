@@ -16,7 +16,7 @@ sudo systemctl status slapd
 
 ### Evidencia
 
-<img width="928" alt="Servicio slapd activo y corriendo desde 2026-05-21 06:30:47 UTC" src="img/ldap-slapd-status.png" />
+<img width="932" height="408" alt="ldap-slapd-status" src="https://github.com/user-attachments/assets/19699d68-0cf2-45fe-b77b-61c9392b94e0" />
 
 ---
 
@@ -32,7 +32,7 @@ ldapsearch -x -b "dc=innovatetech,dc=local" "(objectClass=inetOrgPerson)"
 
 ### Evidencia
 
-<img width="928" alt="ldapsearch mostrando sftpuser1 (uidNumber 2001) y sftpuser2 (uidNumber 2002) con todos sus atributos" src="img/ldap-usuarios.png" />
+<img width="927" height="834" alt="ldap-usuarios" src="https://github.com/user-attachments/assets/9fee92c0-7f36-413b-b45a-6ec6c4b5e619" />
 
 ---
 
@@ -48,7 +48,7 @@ sudo ldapsearch -x -H ldap://localhost -b dc=innovatetech,dc=local
 
 ### Evidencia
 
-<img width="928" alt="Estructura completa del directorio LDAP con dc=innovatetech,dc=local, ou=usuaris, ou=grups y sftpuser1" src="img/ldap-estructura.png" />
+<img width="861" height="890" alt="ldap-estructura" src="https://github.com/user-attachments/assets/357f3f2e-031a-4407-8a92-5aad5c97cc78" />
 
 ---
 
