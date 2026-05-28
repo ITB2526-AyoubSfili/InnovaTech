@@ -16,28 +16,7 @@ https://44.221.44.237/Hola
 
 ### Evidencia
 
-<img width="928" alt="Jitsi Meet con 4 participantes conectados: Didac, Didac móvil, Hola y Cocina peruana" src="img/jitsi-llamada-1.png" />
+<img width="1848" height="1003" alt="jitsi-llamada-1" src="https://github.com/user-attachments/assets/4638c3a4-aa74-45a2-b813-d2b0a1bc91df" />
 
-<img width="928" alt="Segunda vista de la misma reunión desde otro dispositivo con los 4 participantes" src="img/jitsi-llamada-2.png" />
+<img width="1848" height="1003" alt="jitsi-llamada-2" src="https://github.com/user-attachments/assets/cb59375c-5724-4425-9418-f8b19f130fc8" />
 
----
-
-## ✅ 2. Función de compartir pantalla
-
-Se comprobó que la función de compartir pantalla estuviera disponible y funcionando durante la videollamada.
-
-### Evidencia
-
-<img width="928" alt="Jitsi Meet con la función de compartir pantalla activa y barra de herramientas visible" src="img/jitsi-pantalla.png" />
-
----
-
-# 📊 Conclusión
-
-Las pruebas realizadas permitieron verificar el correcto funcionamiento del servidor de videoconferencias.
-
-Se confirmó:
-
-* Videollamadas operativas con múltiples participantes simultáneos.
-* Vídeo y audio funcionando correctamente en todos los participantes.
-* Función de compartir pantalla disponible y operativa.
