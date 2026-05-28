@@ -57,9 +57,9 @@ FLUSH PRIVILEGES;
 
 ---
 
-## 🗄️ Implementación de la Base de Datos InnovateTech
+##  Implementación de la Base de Datos InnovateTech
 
-> 🔗 **Código fuente completo:** [Ver en Google Drive](https://drive.google.com/file/d/1UDlYD38ebCAn6BMpwJ99NEg2WSlSFCdf/view)
+>  **Código fuente completo:** [Ver en Google Drive](https://drive.google.com/file/d/1UDlYD38ebCAn6BMpwJ99NEg2WSlSFCdf/view)
 
 La base de datos `innovatetech` fue diseñada e implementada para dar soporte a toda la infraestructura de la empresa: gestión de empleados, sistema de videoconferencias, catálogo de vídeos en streaming y auditoría de seguridad.
 
@@ -231,7 +231,7 @@ CREATE TABLE Control_backup (
 
 ---
 
-### ✅ Integridad de Datos
+###  Integridad de Datos
 
 Toda la base de datos utiliza restricciones `CASCADE` y `RESTRICT` de forma estratégica:
 
