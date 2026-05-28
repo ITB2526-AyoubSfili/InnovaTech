@@ -212,4 +212,3 @@ En recarregar la pàgina web, el canvi es reflecteix immediatament.
 |--------|-------------|--------|-------------|
 | Web | http://3.219.224.163 | sftpuser1 | Password123 |
 | SFTP | sftp sftpuser1@3.219.224.163 | sftpuser1 | Password123 |
-
