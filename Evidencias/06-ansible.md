@@ -16,7 +16,8 @@ sudo ansible servidors -m ping
 
 ### Evidencia
 
-<img width="928" alt="Ansible ping SUCCESS en los 7 servidores" src="img/ansible-ping.png" />
+<img width="929" height="938" alt="ansible-ping" src="https://github.com/user-attachments/assets/eadf5150-1c58-4798-b5c9-3ec19c0d096e" />
+
 
 ---
 
@@ -32,7 +33,7 @@ ansible-playbook /home/ubuntu/playbook_admin.yml
 
 ### Evidencia
 
-<img width="928" alt="PLAY RECAP playbook_admin.yml ok=5 changed=4 en los 7 servidores" src="img/ansible-playbook-admin.png" />
+<img width="926" height="892" alt="ansible-playbook-admin" src="https://github.com/user-attachments/assets/9ac1e801-bf55-49f0-ab1c-2e9c60d389b5" />
 
 ---
 
@@ -48,7 +49,7 @@ ansible servidors -m command -a "id adminitb"
 
 ### Evidencia
 
-<img width="928" alt="id adminitb en los 7 servidores mostrando uid=1001 groups=27(sudo)" src="img/ansible-id-adminitb.png" />
+<img width="592" height="248" alt="ansible-id-adminitb" src="https://github.com/user-attachments/assets/ea41de35-ae35-4adf-950b-5eace13eaac7" />
 
 ---
 
@@ -64,7 +65,7 @@ ansible-playbook /home/ubuntu/playbook_rsyslog.yml
 
 ### Evidencia
 
-<img width="928" alt="PLAY RECAP playbook_rsyslog.yml ok=4 changed=1 en los 7 servidores" src="img/ansible-playbook-rsyslog.png" />
+<img width="925" height="762" alt="ansible-playbook-rsyslog" src="https://github.com/user-attachments/assets/8ca956c9-8535-4bdf-919f-561964e0c8f6" />
 
 ---
 
@@ -74,7 +75,7 @@ Se verificó que el archivo `/etc/rsyslog.conf` de cada cliente tuviera la líne
 
 ### Evidencia
 
-<img width="928" alt="rsyslog.conf con la línea *.* @10.0.1.201:514 al final del archivo" src="img/ansible-rsyslog-conf.png" />
+<img width="926" height="903" alt="ansible-rsyslog-conf" src="https://github.com/user-attachments/assets/f3b685fd-69ad-404e-acd7-f263c3db6658" />
 
 ---
 
@@ -90,7 +91,8 @@ sudo ls /var/log/remote/ip-10-0-1-*/
 
 ### Evidencia
 
-<img width="928" alt="Carpetas de logs por máquina: ip-10-0-1-201, 208, 209, 23, 237, 60" src="img/ansible-logs-remotos.png" />
+<img width="716" height="363" alt="ansible-logs-remotos" src="https://github.com/user-attachments/assets/02aa49c4-595f-46b9-b4a3-08c815082703" />
+
 
 ---
 
