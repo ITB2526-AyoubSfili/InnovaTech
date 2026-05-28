@@ -1,10 +1,10 @@
-# 🖥️ 1. Pruebas del Servidor Web
+#  1. Pruebas del Servidor Web
 
 El objetivo de estas pruebas es comprobar que el servidor web funciona correctamente, responde a peticiones externas y registra adecuadamente la actividad del sistema.
 
 ---
 
-## ✅ 1.1 Comprobación del estado de NGINX
+##  1.1 Comprobación del estado de NGINX
 
 Se verificó que el servicio NGINX estuviera iniciado y funcionando correctamente.
 
@@ -20,7 +20,7 @@ sudo systemctl status nginx
 
 ---
 
-## ✅ 1.2 Acceso a la página web
+##  1.2 Acceso a la página web
 
 Se comprobó que la página web estuviera accesible desde un navegador externo.
 
@@ -42,7 +42,7 @@ En esta prueba se realizó correctamente el inicio de sesión utilizando un usua
 
 ---
 
-## ✅ 1.3 Verificación de puertos abiertos
+##  1.3 Verificación de puertos abiertos
 
 Se comprobó que los puertos necesarios para el servicio web estuvieran abiertos y escuchando conexiones.
 
@@ -58,7 +58,7 @@ ss -tulnp
 
 ---
 
-## ✅ 1.4 Verificación de logs del servidor web
+##  1.4 Verificación de logs del servidor web
 
 Se comprobó que NGINX registrara correctamente las peticiones realizadas al servidor.
 
@@ -80,13 +80,13 @@ tail -f /var/log/nginx/error.log
 
 ---
 
-# 🔐 2. Pruebas del Servidor SFTP
+#  2. Pruebas del Servidor SFTP
 
 Las siguientes pruebas se realizaron para validar el funcionamiento seguro del servicio de transferencia de archivos mediante SFTP.
 
 ---
 
-## ✅ 2.1 Comprobación del servicio SSH/SFTP
+##  2.1 Comprobación del servicio SSH/SFTP
 
 Se verificó que el servicio SSH estuviera activo, ya que SFTP funciona sobre este servicio.
 
@@ -102,7 +102,7 @@ systemctl status ssh
 
 ---
 
-## ✅ 2.2 Conexión mediante SFTP
+##  2.2 Conexión mediante SFTP
 
 Se realizó una conexión al servidor utilizando el protocolo SFTP.
 
@@ -122,7 +122,7 @@ Se comprobó que la autenticación fuera correcta y que el usuario pudiera acced
 
 ---
 
-## ✅ 2.3 Descarga de archivos
+##  2.3 Descarga de archivos
 
 Se verificó correctamente la descarga de archivos desde el servidor mediante SFTP.
 
@@ -138,7 +138,7 @@ get archivo.txt
 
 ---
 
-# 📊 Conclusión
+#  Conclusión
 
 Las pruebas realizadas permitieron verificar el correcto funcionamiento del servidor web y del servicio SFTP.
 
