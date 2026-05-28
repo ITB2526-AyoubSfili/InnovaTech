@@ -1,4 +1,4 @@
-## 💾 BACKUP Automático
+## BACKUP Automático
 
 Se programó un **evento automático** en la base de datos para realizar copias de seguridad diarias de todas las tablas principales, exportando los datos en formato CSV y registrando cada ejecución en la tabla `Control_backup`.
 
