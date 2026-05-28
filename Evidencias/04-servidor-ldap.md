@@ -1,10 +1,10 @@
-# 🗂️ Servidor LDAP (OpenLDAP)
+#  Servidor LDAP (OpenLDAP)
 
 El objetivo de estas pruebas es comprobar que el servidor OpenLDAP funciona correctamente, que los usuarios están creados y que el directorio responde a consultas.
 
 ---
 
-## ✅ 1. Comprobación del estado del servicio slapd
+##  1. Comprobación del estado del servicio slapd
 
 Se verificó que el servicio OpenLDAP estuviera iniciado y funcionando correctamente.
 
@@ -20,7 +20,7 @@ sudo systemctl status slapd
 
 ---
 
-## ✅ 2. Verificación de los usuarios creados
+##  2. Verificación de los usuarios creados
 
 Se comprobó que los dos usuarios SFTP estuvieran correctamente registrados en el directorio LDAP con sus atributos POSIX.
 
@@ -36,7 +36,7 @@ ldapsearch -x -b "dc=innovatetech,dc=local" "(objectClass=inetOrgPerson)"
 
 ---
 
-## ✅ 3. Comprobación de la estructura completa del directorio
+##  3. Comprobación de la estructura completa del directorio
 
 Se verificó que el árbol de directorio estuviera creado correctamente con la organización, las unidades organizativas `ou=usuaris` y `ou=grups` y los usuarios.
 
@@ -52,7 +52,7 @@ sudo ldapsearch -x -H ldap://localhost -b dc=innovatetech,dc=local
 
 ---
 
-# 📊 Conclusión
+#  Conclusión
 
 Las pruebas realizadas permitieron verificar el correcto funcionamiento del servidor LDAP.
 
