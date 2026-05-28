@@ -1,40 +1,40 @@
-# 03 - Servidor Web i SFTP
+# 03 - Servidor Web y SFTP
 
-## Servidor de Web (Nginx)
+## Servidor Web (Nginx)
 
-El servidor web s'ha instal·lat utilitzant **Nginx** sobre una instància EC2 (`ip-10-0-1-237`), accessible públicament a la IP `3.219.224.163`.
+El servidor web se ha instalado utilizando **Nginx** sobre una instancia EC2 (`ip-10-0-1-237`), accesible públicamente en la IP `3.219.224.163`.
 
-### Pas 1: Instal·lació de Nginx
+### Paso 1: Instalación de Nginx
 
 ```bash
 sudo apt update
 sudo apt install nginx -y
 ```
 
-### Pas 2: Verificació del servei
+### Paso 2: Verificación del servicio
 
 ```bash
 sudo systemctl status nginx
 ```
 
-### Pas 3: Comprovació des del navegador
+### Paso 3: Comprobación desde el navegador
 
-Accedim a `http://3.219.224.163` des del navegador i verifiquem que nginx respon correctament.
+Accedemos a `http://3.219.224.163` desde el navegador y verificamos que nginx responde correctamente.
 
-### Pas 4: Instal·lació de PHP per la pàgina dinàmica
+### Paso 4: Instalación de PHP para la página dinámica
 
 ```bash
 sudo apt install php php-mysql php-fpm php-ldap -y
 sudo systemctl restart nginx php8.3-fpm
 ```
 
-### Pas 5: Configuració de Nginx per usar PHP
+### Paso 5: Configuración de Nginx para usar PHP
 
 ```bash
 sudo nano /etc/nginx/sites-available/default
 ```
 
-Configuració aplicada:
+Configuración aplicada:
 
 ```nginx
 server {
@@ -61,15 +61,15 @@ sudo systemctl restart nginx php8.3-fpm
 
 ## Servidor SFTP
 
-El servei SFTP s'ha configurat al mateix servidor que el web (`ip-10-0-1-237`), autenticant els usuaris mitjançant **OpenLDAP**.
+El servicio SFTP se ha configurado en el mismo servidor que el web (`ip-10-0-1-237`), autenticando los usuarios mediante **OpenLDAP**.
 
-### Pas 1: Configuració del subsistema SFTP a SSH
+### Paso 1: Configuración del subsistema SFTP en SSH
 
 ```bash
 sudo nano /etc/ssh/sshd_config
 ```
 
-S'ha afegit la configuració següent al final del fitxer:
+Se ha añadido la siguiente configuración al final del archivo:
 
 ```bash
 Match Group sftpusers
@@ -79,7 +79,7 @@ Match Group sftpusers
     PubkeyAuthentication no
 ```
 
-### Pas 2: Creació del grup i directori d'uploads
+### Paso 2: Creación del grupo y directorio de uploads
 
 ```bash
 sudo groupadd sftpusers
@@ -87,13 +87,13 @@ sudo mkdir -p /home/sftpuser1/uploads
 sudo chown 2001:2001 /home/sftpuser1/uploads
 ```
 
-### Pas 3: Comprovació de la connexió SFTP
+### Paso 3: Comprobación de la conexión SFTP
 
 ```bash
 sftp sftpuser1@localhost
 ```
 
-Una vegada dins:
+Una vez dentro:
 
 ```bash
 cd uploads
@@ -104,27 +104,27 @@ exit
 
 ---
 
-## Integració SFTP + LDAP
+## Integración SFTP + LDAP
 
-Per tal que el servidor SFTP autentiqui els usuaris mitjançant LDAP, s'ha configurat **nslcd** i **PAM** al servidor web.
+Para que el servidor SFTP autentique los usuarios mediante LDAP, se ha configurado **nslcd** y **PAM** en el servidor web.
 
-### Pas 1: Instal·lació dels paquets necessaris
+### Paso 1: Instalación de los paquetes necesarios
 
 ```bash
 sudo apt install libnss-ldapd libpam-ldapd -y
 ```
 
-Durant la instal·lació s'ha configurat:
+Durante la instalación se ha configurado:
 - **URI LDAP**: `ldap://10.0.1.209`
 - **Base DN**: `dc=innovatetech,dc=local`
 
-### Pas 2: Configuració de nslcd
+### Paso 2: Configuración de nslcd
 
 ```bash
 sudo nano /etc/nslcd.conf
 ```
 
-Configuració aplicada:
+Configuración aplicada:
 
 ```bash
 uri ldap://10.0.1.209/
@@ -132,39 +132,39 @@ base dc=innovatetech,dc=local
 tls_reqcert never
 ```
 
-### Pas 3: Configuració de nsswitch
+### Paso 3: Configuración de nsswitch
 
 ```bash
 cat /etc/nsswitch.conf | grep passwd
 ```
 
-Ha de mostrar:
+Debe mostrar:
 
 ```
 passwd: files ldap
 ```
 
-### Pas 4: Reinici dels serveis
+### Paso 4: Reinicio de los servicios
 
 ```bash
 sudo systemctl restart nslcd ssh
 ```
 
-### Pas 5: Verificació que el sistema resol usuaris LDAP
+### Paso 5: Verificación de que el sistema resuelve usuarios LDAP
 
 ```bash
 getent passwd sftpuser1
 ```
 
-Resultat esperat:
+Resultado esperado:
 
 ```
 sftpuser1:x:2001:2001:sftpuser1:/home/sftpuser1:/bin/bash
 ```
 
-L'`uid=2001` confirma que l'usuari ve de **LDAP** i no del sistema local.
+El `uid=2001` confirma que el usuario proviene de **LDAP** y no del sistema local.
 
-### Pas 6: Prova de connexió SFTP autenticada via LDAP
+### Paso 6: Prueba de conexión SFTP autenticada vía LDAP
 
 ```bash
 sftp sftpuser1@localhost
@@ -179,36 +179,36 @@ exit
 
 ---
 
-## Pàgina Web amb autenticació LDAP i connexió a la BD
+## Página Web con autenticación LDAP y conexión a la BD
 
-S'ha desenvolupat una aplicació web en PHP que:
-- Requereix **autenticació via LDAP** per accedir
-- Consulta la **base de dades MariaDB** en temps real
-- Mostra totes les taules de la BD d'InnovateTech
+Se ha desarrollado una aplicación web en PHP que:
+- Requiere **autenticación vía LDAP** para acceder
+- Consulta la **base de datos MariaDB** en tiempo real
+- Muestra todas las tablas de la BD de InnovateTech
 
-### Pas 1: Creació de l'usuari de BD per la web
+### Paso 1: Creación del usuario de BD para la web
 
-A la màquina Database-Server (`ip-10-0-1-208`):
+En la máquina Database-Server (`ip-10-0-1-208`):
 
 ```bash
 mysql -u root -ppirineus -e "CREATE USER 'webuser'@'%' IDENTIFIED BY 'pirineus'; GRANT SELECT ON innovatetech.* TO 'webuser'@'%'; FLUSH PRIVILEGES;"
 ```
 
-### Pas 2: Comprovació dinàmica
+### Paso 2: Comprobación dinámica
 
-Per verificar que la web és dinàmica, modifiquem un registre a la BD:
+Para verificar que la web es dinámica, modificamos un registro en la BD:
 
 ```bash
 mysql -u root -ppirineus innovatetech -e "UPDATE Empleat SET telefon='111111111' WHERE dni='12345678A';"
 ```
 
-En recarregar la pàgina web, el canvi es reflecteix immediatament.
+Al recargar la página web, el cambio se refleja inmediatamente.
 
 ---
 
-## Credencials d'accés
+## Credenciales de acceso
 
-| Servei | URL / Adreça | Usuari | Contrasenya |
-|--------|-------------|--------|-------------|
+| Servicio | URL / Dirección | Usuario | Contraseña |
+|----------|----------------|---------|------------|
 | Web | http://3.219.224.163 | sftpuser1 | Password123 |
 | SFTP | sftp sftpuser1@3.219.224.163 | sftpuser1 | Password123 |
