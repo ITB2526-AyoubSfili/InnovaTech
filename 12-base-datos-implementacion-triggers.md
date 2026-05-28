@@ -2,7 +2,7 @@
 
 ---
 
-## 📦 Instalación del servicio de bases de datos
+## Instalación del servicio de bases de datos
 
 El primer paso fue instalar el servidor de bases de datos **MariaDB** en la máquina dedicada (`ip-10-0-1-208`). MariaDB es una bifurcación comunitaria de MySQL, ampliamente utilizada en entornos de producción por su rendimiento y compatibilidad.
 
@@ -21,7 +21,7 @@ sudo systemctl status mariadb
 
 ---
 
-## 🔒 Configuración de la Fortificación del Servidor (MariaDB)
+## Configuración de la Fortificación del Servidor (MariaDB)
 
 Una vez instalado MariaDB, es imprescindible **blindar el servidor** antes de cualquier uso en producción. Para ello se ejecuta el script oficial de seguridad:
 
@@ -75,7 +75,7 @@ USE innovatetech;
 
 ---
 
-### 🏢 Estructura Organizativa
+### Estructura Organizativa
 
 Se crearon las tablas base de la organización con **integridad referencial mediante claves foráneas**, garantizando que los datos siempre estén relacionados de forma coherente.
 
@@ -108,7 +108,7 @@ CREATE TABLE Empleat (
 
 ---
 
-### 📞 Gestión de Comunicaciones (QoS)
+### Gestión de Comunicaciones (QoS)
 
 Se implementaron tablas para controlar el acceso al sistema de videoconferencias con **perfiles de calidad de servicio (QoS)**, limitando los minutos mensuales y las llamadas diarias por usuario.
 
@@ -144,7 +144,7 @@ CREATE TABLE Usuari_comunicacio (
 
 ---
 
-### 📋 Registro de Actividad
+### Registro de Actividad
 
 Tablas para el historial completo de llamadas y el catálogo de vídeos del servidor de streaming:
 
@@ -187,7 +187,7 @@ CREATE TABLE Video (
 
 ---
 
-### 🔧 Mantenimiento y Auditoría
+### Mantenimiento y Auditoría
 
 Tablas para el monitoreo continuo del ancho de banda y el registro automático de copias de seguridad y eventos de auditoría:
 
@@ -489,7 +489,7 @@ SELECT * FROM Avis_auditoria ORDER BY id_avis DESC LIMIT 5;
 ---
 
 
-## 📊 Resumen de Automatizaciones Implementadas
+## Resumen de Automatizaciones Implementadas
 
 | Elemento | Tipo | Tabla afectada | Acción |
 |----------|------|----------------|--------|
@@ -501,4 +501,4 @@ SELECT * FROM Avis_auditoria ORDER BY id_avis DESC LIMIT 5;
 
 ---
 
-> 💡 **Nota:** Todos los triggers escriben en la tabla `Avis_auditoria`, que actúa como registro centralizado de seguridad. Esto permite auditar cualquier incidencia o intento de violación de las reglas de negocio sin necesidad de revisar los logs del sistema operativo.
+>  **Nota:** Todos los triggers escriben en la tabla `Avis_auditoria`, que actúa como registro centralizado de seguridad. Esto permite auditar cualquier incidencia o intento de violación de las reglas de negocio sin necesidad de revisar los logs del sistema operativo.
