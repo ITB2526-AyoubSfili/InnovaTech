@@ -206,7 +206,7 @@ La solución moderniza Innovate Tech pasando de comunicaciones presenciales a un
 
 ## Vídeo demostración (3 minutos)
 
-[Enlace al vídeo de YouTube]
+
 
 El vídeo muestra:
 1. **Introducción** 
