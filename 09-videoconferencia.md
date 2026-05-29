@@ -83,7 +83,7 @@ Para que el servicio sea accesible desde el exterior, se configuraron las siguie
 |---|---|---|
 | `80` | TCP | Redirección HTTP a HTTPS |
 | `443` | TCP | Interfaz web segura (HTTPS) |
-| `4443` | TCP | Señalización RTCP / STUN |
+| `8443` | TCP | Señalización RTCP / STUN |
 | `10000` | UDP | Tráfico de medios en tiempo real (audio/vídeo) |
 
 > [!NOTE]
